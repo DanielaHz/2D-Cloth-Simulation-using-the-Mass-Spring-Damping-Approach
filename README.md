@@ -2,6 +2,7 @@
 Animation Software Engineering ideas.
 
 ***Disclaimer: The project ideas listed below are part of the assignments for the MIT Computer Graphics course. I have chosen to pursue these projects because, in addition to being interesting to develop, they have a clear scope, provide instructions, and offer a basic framework to begin with.***
+MIT course URL: https://ocw.mit.edu/courses/6-837-computer-graphics-fall-2012/
 
 # Idea 1: Particle system cloth Simulation
 
