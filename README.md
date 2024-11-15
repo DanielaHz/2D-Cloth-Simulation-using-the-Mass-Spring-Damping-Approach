@@ -6,7 +6,7 @@ MIT course URL: https://ocw.mit.edu/courses/6-837-computer-graphics-fall-2012/
 
 # Idea 1: Particle system cloth Simulation
 
-## Descrition: 
+## Description: 
 Create a program to simulate cloth behavior using a particle system. The system will represent cloth as a grid of particles, each connected by springs, and affected by forces such as gravity. The goal is to model the physical interactions between the particles, allowing them to behave like fabric.
 
 ## Computer animation area: Physical Based Animation
@@ -34,7 +34,7 @@ Additional libraries as needed for numerical methods and particle system handlin
 ----------------------------------------------------------------------------------
 # Idea 2.Ray Casting Program
 
-## Descrition: 
+## Description: 
 Develop a program to implement a ray-casting technique for rendering basic geometric primitives, such as spheres, cubes, and planes. The program should also support a perspective camera, Phong shading, and texture mapping to create a realistic 3D scene.
 
 ## Computer animation area: Rendering
