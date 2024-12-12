@@ -62,11 +62,14 @@ This class is responsible for:
 ### TimeIntegrator
 The TimeIntegrator contains the implementation for the different numerical integrators used in the simulation. Im planning to use the Runge-Kutta 4th order (RK4) available in the NCCA. And if everything works well I will develope the Verlet integrator.
 
-### ClothSimulator
-The ClothSimulator class is responsible for calculating the internal and external forces between particles, managing the constraints that define the cloth's behavior, and calculating the final force acting on each particle.
+### Cloth
+The Cloth class is responsible for calculating the internal and external forces between particles, managing the constraints that define the cloth's behavior, and calculating the final force acting on each particle.
+
+### Simulation
+Serves as the central controller of the simulation, managing the main simulation loop. It handles user input events, updates the simulation state by interacting with core components like the particle system and integrators, and manages the rendering of the simulation's current state. Additionally, it allows for switching between different numerical integrators and resetting the simulation as needed, coordinating the overall flow of the application to ensure smooth interaction and execution
 
 ## UML Diagram
-![UML-diagram](images/UML.jpeg)
+![UML-diagram](images/UML_Cloth_Simulation.png)
 
 ## Workflow
 ![workflow](images/Workflow.jpeg) 
