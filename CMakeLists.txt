@@ -8,21 +8,21 @@ cmake_minimum_required(VERSION 3.12)
 # Windows :- mkdir build; cd build ; cmake -DCMAKE_PREFIX_PATH=~/NGL/ .. ; cmake --build . 
 # Linux / Mac mkdir build; cd build; cmake -DCMAKE_PREFIX_PATH=~/NGL/ .. ; make
 #-------------------------------------------------------------------------------------------
+
+# Initial configuration
 if(NOT DEFINED CMAKE_TOOLCHAIN_FILE AND DEFINED ENV{CMAKE_TOOLCHAIN_FILE})
    set(CMAKE_TOOLCHAIN_FILE $ENV{CMAKE_TOOLCHAIN_FILE})
 endif()
 
-# Name of the project
+# Project name
 project(ClothSimulation)
-# This is the name of the Exe change this and it will change everywhere
-set(TargetName ClothSimulation)
-# This will include the file NGLConfig.cmake, you need to add the location to this either using
-# -DCMAKE_PREFIX_PATH=~/NGL or as a system environment variable. 
+set(TargetName ClothSimulation) # This is the name of the Exe
+
+# Find NGL
 find_package(NGL CONFIG REQUIRED)
-# Instruct CMake to run moc automatically when needed (Qt projects only)
+
+#Qt configuration 
 set(CMAKE_AUTOMOC ON)
-# find Qt libs
-# find Qt libs first we check for Version 6
 find_package(Qt6 COMPONENTS OpenGL Widgets QUIET )
 if ( Qt6_FOUND )
     message("Found Qt6 Using that")
@@ -31,10 +31,11 @@ else()
     find_package(Qt5 COMPONENTS OpenGL Widgets REQUIRED)
 endif()
 
-# use C++ 17
+# C++ 17 configuration
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
+
 # Set the name of the executable we want to build
 add_executable(${TargetName})
 
@@ -48,6 +49,19 @@ target_sources(${TargetName} PRIVATE ${PROJECT_SOURCE_DIR}/src/main.cpp
 )
 
 target_link_libraries(${TargetName} PRIVATE Qt::Widgets Qt::OpenGL NGL)
+
+#-------------------------------------------------------------------------------------------
+# GoogleTest Config
+find_package(GTest CONFIG REQUIRED)
+include(GoogleTest)
+enable_testing()
+
+# Test Exe
+add_executable(ClothSimulationTests)
+target_sources(ClothSimulationTests PRIVATE ${PROJECT_SOURCE_DIR}/tests/ParticleTests.cpp)
+target_link_libraries(ClothSimulationTests PRIVATE GTest::gtest GTest::gtest_main Qt::Widgets Qt::OpenGL NGL)
+gtest_discover_tests(ClothSimulationTests)
+#-------------------------------------------------------------------------------------------
 
 #add_custom_target(${TargetName}CopyShaders ALL
 #    COMMAND ${CMAKE_COMMAND} -E copy_directory
