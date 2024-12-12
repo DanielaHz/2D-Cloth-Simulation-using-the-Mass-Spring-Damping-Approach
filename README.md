@@ -12,6 +12,7 @@ Develop a program to simulate cloth behavior using a particle system. The cloth 
 - Pikuma clothe simulation with Verlet integration: https://pikuma.com/blog/verlet-integration-2d-cloth-physics-simulation
 - BlankNGL: https://github.com/NCCA/BlankNGL
 - MassSpring / RK4 integrator: https://github.com/NCCA/MassSpring
+- Particle structure: https://nccastaff.bournemouth.ac.uk/jmacey/msc/ase/labs/lab5/lab5/
 
 ## Computer animation area: Physical Based Animation
 
@@ -43,17 +44,29 @@ A graphical application (OpenGL window) that visualizes the cloth simulation.
 - **Note: Collission in particles can be a very difficult to handle so intial I will avoid this. **
 - **Structural Mechanics**: Modeling particle grids to simulate material properties and forces within the system.
 
-## Classes and Data Structures
-- Particle Class: Represents individual particles in the system.
-- Spring Class: Represents connections (springs) between particles.
-- Cloth Class: Represents the overall cloth system (grid of particles).
-- TimeStepper Class:
-    * Manages time integration methods, including RK4 and Verlet integrators.
-    * Custom implementation of the Verlet integrator.
-    * Unit tests for both integrators and their associated methods.
+## Classes
 
-- **Note: A Camera Class is not included since this is a 2D application, and the camera position remains static, handled directly by the OpenGL context.**
+### Particle
+This class is responsible for managing the individual properties of each particle such as position, velocity, acceleration, and mass, along with a color property to allow the user to choose a color for the grid (just for fun).
 
-## Sim loop 
+### Spring
+TTe class represents the properties of a spring. The mass of this element is not taking in count cause the force will calculate it according to Hooke's law.
 
+### ParticleSystem
+This class is responsible for:
 
+    - Store the initial and final state of the particles.
+    - Request to the time integrator the final state of the particles.
+    - Pass the final state to the render function in OpenGL.
+
+### TimeIntegrator
+The TimeIntegrator contains the implementation for the different numerical integrators used in the simulation. Im planning to use the Runge-Kutta 4th order (RK4) available in the NCCA. And if everything works well I will develope the Verlet integrator.
+
+### ClothSimulator
+The ClothSimulator class is responsible for calculating the internal and external forces between particles, managing the constraints that define the cloth's behavior, and calculating the final force acting on each particle.
+
+## UML Diagram
+![UML-diagram](images/UML.jpeg)
+
+## Workflow
+![workflow](images/Workflow.jpeg) 
