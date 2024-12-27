@@ -47,7 +47,7 @@ A graphical application (OpenGL window) that visualizes the cloth simulation.
 ## Classes
 
 ### Mass
-This class is responsible for managing the individual properties of each mass such as position, velocity, acceleration, and mass, along with a color property to allow the user to choose a color for the grid (just for fun).
+This class is responsible for managing the individual properties of each mass such as position, velocity, acceleration, and mass.
 
 ### Spring
 The class represents the properties of a spring. The mass of this element is not taking in count cause the force will calculate it according to Hooke's law.
@@ -56,14 +56,14 @@ The class represents the properties of a spring. The mass of this element is not
 The TimeIntegrator contains the implementation for the different numerical integrators used in the simulation. Im planning to use the Runge-Kutta 4th order (RK4) available in the NGL demos. And if everything works well I will develope the Verlet integrator.
 
 ### Cloth
-The Cloth class is responsible for calculating the internal and external forces between particles, managing the constraints that define the cloth's behavior, and calculating the final force acting on each particle.
+The Cloth class is responsible for calculating the internal and external forces between masses, managing the constraints that define the cloth's behavior, and calculating the final force acting on each particle.
 Also the class is going to: 
-    - Store the initial and final state of the particles.
-    - Request to the time integrator the final state of the particles.
-    - Pass the final state to the render function in OpenGL.
+    - Store the initial and final(update) state of the masses.
+    - Request to the time integrator the final(update) state of the masses.
+    - Pass the final state to the draw function who is called in NGLScene.h
 
 ### Simulation
-Serves as the central controller of the simulation, managing the main simulation loop. It handles user input events, updates the simulation state by interacting with core components like the particle system and integrators, and manages the rendering of the simulation's current state. Additionally, it allows for switching between different numerical integrators and resetting the simulation as needed, coordinating the overall flow of the application to ensure smooth interaction and execution
+This class manages the lifecycle of an interactive application that simulates and renders a cloth, handling its initial setup, updates, rendering, and resource cleanup. It contains pointers to key components (Renderer, Mouse, and Cloth) and provides methods for configuring the simulation, processing user input, updating the application state, and rendering graphics.
 
 ## UML Diagram
 
