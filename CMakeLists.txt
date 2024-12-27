@@ -50,10 +50,13 @@ add_executable(${TargetName})
 # Add NGL include path
 include_directories(include $ENV{HOME}/NGL/include)
 
-target_sources(${TargetName} PRIVATE ${PROJECT_SOURCE_DIR}/src/main.cpp  
+target_sources(${TargetName} PRIVATE 
+            ${PROJECT_SOURCE_DIR}/src/main.cpp  
+            ${PROJECT_SOURCE_DIR}/src/Mass.cpp
 			${PROJECT_SOURCE_DIR}/src/NGLScene.cpp  
 			${PROJECT_SOURCE_DIR}/src/NGLSceneMouseControls.cpp  
-			${PROJECT_SOURCE_DIR}/include/NGLScene.h  
+			${PROJECT_SOURCE_DIR}/include/NGLScene.h
+            ${PROJECT_SOURCE_DIR}/include/Mass.h    
 )
 
 target_link_libraries(${TargetName} PRIVATE Qt::Widgets Qt::OpenGL NGL)
@@ -66,7 +69,10 @@ enable_testing()
 
 # Test Exe
 add_executable(ClothSimulationTests)
-target_sources(ClothSimulationTests PRIVATE ${PROJECT_SOURCE_DIR}/tests/ParticleTests.cpp)
+target_sources(ClothSimulationTests PRIVATE 
+            ${PROJECT_SOURCE_DIR}/tests/MassTest.cpp
+            ${PROJECT_SOURCE_DIR}/src/Mass.cpp
+)
 target_link_libraries(ClothSimulationTests PRIVATE GTest::gtest GTest::gtest_main Qt::Widgets Qt::OpenGL NGL)
 gtest_discover_tests(ClothSimulationTests)
 #-------------------------------------------------------------------------------------------
