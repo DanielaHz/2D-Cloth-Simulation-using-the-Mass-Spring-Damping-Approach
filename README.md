@@ -26,7 +26,7 @@ A graphical application (OpenGL window) that visualizes the cloth simulation.
 
 ## Graphics API and Framework
 - Graphics API: OpenGL
-- Graphics Context: Qt (to develop the GUI)
+- Graphics Context: Qt
 - Unit Testing Framework: GTest
 
 ## External libraries
@@ -47,28 +47,44 @@ A graphical application (OpenGL window) that visualizes the cloth simulation.
 ## Classes
 
 ### Mass
-This class is responsible for managing the individual properties of each mass such as position, velocity, acceleration, and mass.
+Represents a particle in the cloth. 
 
 ### Spring
-The class represents the properties of a spring. The mass of this element is not taking in count cause the force will calculate it according to Hooke's law.
+Represents a spring connecting two particles.
 
 ### TimeIntegrator
-The TimeIntegrator contains the implementation for the different numerical integrators used in the simulation. Im planning to use the Runge-Kutta 4th order (RK4) available in the NGL demos. And if everything works well I will develope the Verlet integrator.
+Calculate the new velocty and position integrating the final force of any mass in the system
 
 ### Cloth
-The Cloth class is responsible for calculating the internal and external forces between masses, managing the constraints that define the cloth's behavior, and calculating the final force acting on each particle.
-Also the class is going to: 
-    - Store the initial and final(update) state of the masses.
-    - Request to the time integrator the final(update) state of the masses.
-    - Pass the final state to the draw function who is called in NGLScene.h
+Handles the cloth simulation, including initialization, force calculations, state updates, and rendering.
 
 ### Simulation
-This class manages the lifecycle of an interactive application that simulates and renders a cloth, handling its initial setup, updates, rendering, and resource cleanup. It contains pointers to key components (Renderer, Mouse, and Cloth) and provides methods for configuring the simulation, processing user input, updating the application state, and rendering graphics.
+Manages the simulation logic, integrating Cloth and NGLScene.
+
+### NGLScene
+Manages the OpenGL context and calls drawCloth to render the particles and springs.
+
+### main
+Initializes the Qt application, sets up the OpenGL format, initializes the simulation, and runs the main loop.
 
 ## UML Diagram
 
-![UML-diagram](images/UML_Cloth_Simulation_02.png)
-**Note:** https://shorturl.at/oAauc
+![UML-diagram](images/UML_Final_Design.jpg)
 
-## Workflow
-![workflow](images/Workflow.jpeg) 
+## Flowchart Description
+
+1. Start: The application begins in main.
+2. Initialize Application:
+    2.1 main initializes the Qt application and sets up the OpenGL format.
+    2.2 main initializes Simulation.
+3. Simulation Logic:
+    3.1 Simulation initializes Cloth and NGLScene.
+    3.2 Simulation manages the main simulation loop.
+4. Cloth Simulation:
+    4.1 Cloth initializes Mass and Spring objects.
+    4.2 Cloth calculates forces and updates states for the particles and springs.
+    4.3 Cloth uses TimeIntegrator to compute new positions and velocities for masses.
+5. Rendering:
+    5.1 NGLScene calls drawCloth to render the particles and springs using OpenGL.
+6. Repeat:
+    6.1 This is repeat it until the cloth is in a equilirbium state. (total forces = 0)
