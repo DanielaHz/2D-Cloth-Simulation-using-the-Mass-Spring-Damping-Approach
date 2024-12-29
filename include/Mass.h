@@ -14,6 +14,8 @@ class Mass {
 
         Mass() = default;
         Mass(ngl::Vec3 initPos, ngl::Vec3 initVel, ngl::Vec3 pos, ngl::Vec3 vel, float mass, float size, bool isFixed);
-        ~Mass() = default;      
+        ~Mass() = default;
+
+        void updateState(ngl::Vec3 newPos, ngl::Vec3 newVel);      
 };
 #endif

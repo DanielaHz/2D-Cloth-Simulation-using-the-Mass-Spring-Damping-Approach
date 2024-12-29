@@ -11,10 +11,10 @@ TEST(Mass, DefaultConstructor)
 
 TEST(Mass, ParametrizedConstructor)
 {
-    ngl::Vec3 initPos{1.0f, 2.0f, 3.0f};
-    ngl::Vec3 initVel{0.1f, 0.2f, 0.3f};
-    ngl::Vec3 pos{4.0f, 5.0f, 6.0f};
-    ngl::Vec3 vel{0.4f, 0.5f, 0.6f};
+    ngl::Vec3 initPos{1.0f, 2.0f, 0.0f}; // Remember is a 2D animation so z = 0.0f
+    ngl::Vec3 initVel{0.1f, 0.2f, 0.0f};
+    ngl::Vec3 pos{4.0f, 5.0f, 0.0f};
+    ngl::Vec3 vel{0.4f, 0.5f, 0.0f};
     float mass = 2.0f;
     float size = 10.0f;
     bool isFixed = true;
@@ -28,4 +28,19 @@ TEST(Mass, ParametrizedConstructor)
     EXPECT_FLOAT_EQ(m.mass, mass);
     EXPECT_FLOAT_EQ(m.size, size);
     EXPECT_TRUE(m.isFixed);
+}
+
+TEST(Mass, updateState)
+{   
+    // Initial state of the mass m
+    Mass m (ngl::Vec3 {4.0f, 5.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, 1.0f, 1.0f, false); 
+
+    // Values should calculate for the RK4
+    ngl::Vec3 newPosition{4.0f, 10.0f, 0.0f};
+    ngl::Vec3 newVelocity{0.0f, 0.6f, 0.0f};
+
+    m.updateState(newPosition, newVelocity); // asign to position and velocity the new values
+
+    EXPECT_EQ(m.position, newPosition);
+    EXPECT_EQ(m.velocity, newVelocity);
 }
