@@ -1,0 +1,4 @@
+#include "Mass.h"
+
+Mass::Mass(ngl::Vec3 initPos, ngl::Vec3 initVel, ngl::Vec3 pos, ngl::Vec3 vel, float mass, float size, bool isFixed)
+    : initPosition{initPos}, initVelocity{initVel}, position{pos}, velocity{vel}, mass{mass}, size{size}, isFixed{isFixed} {}
