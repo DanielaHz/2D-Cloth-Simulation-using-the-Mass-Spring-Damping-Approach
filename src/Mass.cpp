@@ -8,3 +8,9 @@ void Mass::updateState(ngl::Vec3 newPos, ngl::Vec3 newVel)
     position.set(newPos);
     velocity.set(newVel);
 }
+
+void Mass::resetState()
+{
+    position.set({0.0f, 0.0f,0.0f});
+    velocity.set({0.0f, 0.0f, 0.0f});
+}

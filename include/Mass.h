@@ -17,5 +17,6 @@ class Mass {
         ~Mass() = default;
 
         void updateState(ngl::Vec3 newPos, ngl::Vec3 newVel);      
+        void resetState();
 };
 #endif

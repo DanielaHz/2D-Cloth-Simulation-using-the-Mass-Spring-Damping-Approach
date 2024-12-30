@@ -35,12 +35,26 @@ TEST(Mass, updateState)
     // Initial state of the mass m
     Mass m (ngl::Vec3 {4.0f, 5.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, 1.0f, 1.0f, false); 
 
-    // Values should calculate for the RK4
+    // Values should calculate for the RK4 - default values for now.
     ngl::Vec3 newPosition{4.0f, 10.0f, 0.0f};
     ngl::Vec3 newVelocity{0.0f, 0.6f, 0.0f};
 
-    m.updateState(newPosition, newVelocity); // asign to position and velocity the new values
+    m.updateState(newPosition, newVelocity); // update the position and velocity
 
     EXPECT_EQ(m.position, newPosition);
     EXPECT_EQ(m.velocity, newVelocity);
+}
+
+TEST(Mass, resetState)
+{
+    // Should reset position and velocity to {0.0f, 0.0f, 0.0f}
+    Mass m (ngl::Vec3 {4.0f, 5.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {5.0f, 7.0f, 0.0f}, {1.0f, 3.0f, 0.0f}, 1.0f, 1.0f, false); 
+
+    m.resetState(); // Reset the state
+
+    ngl::Vec3 expectedPosition{0.0f, 0.0f, 0.0f};
+    ngl::Vec3 expectedVelocity{0.0f, 0.0f, 0.0f};
+    
+    EXPECT_EQ(m.position, expectedPosition);
+    EXPECT_EQ(m.velocity, expectedVelocity);
 }
