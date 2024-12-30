@@ -33,7 +33,7 @@ TEST(Mass, ParametrizedConstructor)
 TEST(Mass, updateState)
 {   
     // Initial state of the mass m
-    Mass m (ngl::Vec3 {4.0f, 5.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, 1.0f, 1.0f, false); 
+    Mass m (ngl::Vec3 {4.0f, 5.0f, 0.0f}, ngl::Vec3 {0.0f, 0.0f, 0.0f}, ngl::Vec3 {0.0f, 0.0f, 0.0f}, ngl::Vec3 {0.0f, 0.0f, 0.0f}, 1.0f, 1.0f, false); 
 
     // Values should calculate for the RK4 - default values for now.
     ngl::Vec3 newPosition{4.0f, 10.0f, 0.0f};
@@ -48,7 +48,7 @@ TEST(Mass, updateState)
 TEST(Mass, resetState)
 {
     // Should reset position and velocity to {0.0f, 0.0f, 0.0f}
-    Mass m (ngl::Vec3 {4.0f, 5.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {5.0f, 7.0f, 0.0f}, {1.0f, 3.0f, 0.0f}, 1.0f, 1.0f, false); 
+    Mass m (ngl::Vec3 {4.0f, 5.0f, 0.0f}, ngl::Vec3 {0.0f, 0.0f, 0.0f}, ngl::Vec3 {5.0f, 7.0f, 0.0f}, ngl::Vec3 {1.0f, 3.0f, 0.0f}, 1.0f, 1.0f, false); 
 
     m.resetState(); // Reset the state
 
