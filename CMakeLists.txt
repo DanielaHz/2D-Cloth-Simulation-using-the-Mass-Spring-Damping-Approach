@@ -55,6 +55,7 @@ target_sources(${TargetName} PRIVATE
 			${PROJECT_SOURCE_DIR}/src/NGLScene.cpp  
 			${PROJECT_SOURCE_DIR}/src/NGLSceneMouseControls.cpp
             ${PROJECT_SOURCE_DIR}/src/Mass.cpp
+            ${PROJECT_SOURCE_DIR}/src/Spring.cpp
             ${PROJECT_SOURCE_DIR}/src/Cloth.cpp
 			${PROJECT_SOURCE_DIR}/include/NGLScene.h
             ${PROJECT_SOURCE_DIR}/include/Mass.h    
@@ -77,6 +78,7 @@ target_sources(ClothSimulationTests PRIVATE
             ${PROJECT_SOURCE_DIR}/tests/SpringTest.cpp
             ${PROJECT_SOURCE_DIR}/tests/ClothTest.cpp
             ${PROJECT_SOURCE_DIR}/src/Mass.cpp
+            ${PROJECT_SOURCE_DIR}/src/Spring.cpp
 )
 target_link_libraries(ClothSimulationTests PRIVATE GTest::gtest GTest::gtest_main Qt::Widgets Qt::OpenGL NGL)
 gtest_discover_tests(ClothSimulationTests)
