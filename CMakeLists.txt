@@ -79,6 +79,7 @@ target_sources(ClothSimulationTests PRIVATE
             ${PROJECT_SOURCE_DIR}/tests/ClothTest.cpp
             ${PROJECT_SOURCE_DIR}/src/Mass.cpp
             ${PROJECT_SOURCE_DIR}/src/Spring.cpp
+            ${PROJECT_SOURCE_DIR}/src/Cloth.cpp
 )
 target_link_libraries(ClothSimulationTests PRIVATE GTest::gtest GTest::gtest_main Qt::Widgets Qt::OpenGL NGL)
 gtest_discover_tests(ClothSimulationTests)
