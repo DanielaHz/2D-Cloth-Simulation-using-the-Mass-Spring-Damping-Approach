@@ -28,6 +28,23 @@ TEST(Mass, ParametrizedConstructor)
     EXPECT_FLOAT_EQ(m.mass, mass);
     EXPECT_FLOAT_EQ(m.size, size);
     EXPECT_TRUE(m.isFixed);
+
+    //////////////////////////////////////////////////////
+    ngl::Vec3 initPosition = {5.0f, 0.0f, 0.0f};
+    ngl::Vec3 initVelocity = {0.0f, 0.0f, 0.0f};
+    ngl::Vec3 position = {0.0f, 0.0f, 0.0f};
+    ngl::Vec3 velocity = {0.0f, 0.0f, 0.0f};
+    float mass2 = 1.0f; 
+    float size2 = 5.0f;
+
+    Mass m2(ngl::Vec3 {5.0f, 0.0f, 0.0f}, isFixed = true);
+    EXPECT_EQ(m2.initPosition, initPosition);
+    EXPECT_EQ(m2.initVelocity, initVelocity);
+    EXPECT_EQ(m2.position, position);
+    EXPECT_EQ(m2.velocity, velocity);
+    EXPECT_FLOAT_EQ(m2.mass, mass2);
+    EXPECT_FLOAT_EQ(m2.size, size2);
+    EXPECT_TRUE(m2.isFixed);
 }
 
 TEST(Mass, updateState)
