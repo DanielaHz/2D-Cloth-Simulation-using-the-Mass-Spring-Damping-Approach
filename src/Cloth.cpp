@@ -100,8 +100,22 @@ void Cloth::printConnectionsMap()
     }
 }
 
-void Cloth::createSpring()
-{
+void Cloth::createSpring(float spacing)
 
+{   // recorre toda las unicas conexiones porque ese es el numero de resorte que dani va a crear
+    for (auto e: uniqueConnections)
+    {
+        auto mass1Index = e.first;
+        auto mass1VecConecctions = e.second;
+        for (auto mass2Index : mass1VecConecctions)
+        {
+            // accedo a las masas que estan en el vector MassInSystem
+            auto mass1 = std::make_shared<Mass>(massInSystem[mass1Index]);
+            auto mass2 = std::make_shared<Mass>(massInSystem[mass2Index]);
+            // creo spring
+            Spring s(spacing, mass1, mass2);
+            springInSystem.push_back(s);
+        }
+    }
 }
 

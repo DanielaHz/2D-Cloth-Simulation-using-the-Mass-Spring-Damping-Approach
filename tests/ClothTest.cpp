@@ -53,7 +53,7 @@ TEST(Cloth, createMass)
     GTEST_LOG_(INFO) << "Mass 1 position: " << c.massInSystem[0].initPosition.m_x << c.massInSystem[0].initPosition.m_y << c.massInSystem[0].initPosition.m_z << "\n";
 
     // check the 9 mass at the moment
-    for (int i = 0; i < 9; ++i)
+    for (int i = 0; i < totalMass; ++i)
     {
         int row = i / numMassWidth;  
         int col = i % numMassWidth;  
@@ -98,16 +98,52 @@ TEST (Cloth, createSpringConnectionsTestOneMass3X3Grid)
 TEST (Cloth, printConnectionsMap)
 {
     Cloth c;
-    int numMassWidth = 10;
-    int numMassHeight = 5;
+    int numMassWidth = 3;
+    int numMassHeight = 3;
 
     c.createSpringConnections(numMassWidth, numMassHeight);
 
     c.printConnectionsMap();
 }
 
+TEST(Cloth, createSpring)
+{
+    int width = 10;
+    int height = 10;
+    float spacing = 3.0f;
+    int windowWidth = 1240;
 
-// TEST(Cloth, createSpring)
-// {
+    int numMassWidth = static_cast<int>(width/spacing);
+    int numMassHeight = static_cast<int>(height/spacing);
+    int totalMass = numMassWidth * numMassHeight;
 
-// }
+    float initX = (windowWidth - width) / 2;
+    float initY = 100.0f;
+    float posZ = 0.0f;
+
+    Cloth c;
+    c.createMass(width, height, spacing);
+    c.createSpringConnections (numMassWidth, numMassHeight);
+    c.createSpring(spacing);
+
+    int expectedSprings = 0;
+    for (const auto& e : c.uniqueConnections) {
+        expectedSprings += e.second.size();
+    }
+    ASSERT_EQ(c.springInSystem.size(), expectedSprings);
+}
+
+TEST(Cloth, validateSpringMassConnection)
+{
+
+}
+
+TEST(Cloth, validateSpringMassPosition)
+{
+
+}
+
+TEST(Cloth, DrawCloth)
+{
+    
+}

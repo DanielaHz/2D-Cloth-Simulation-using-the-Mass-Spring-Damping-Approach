@@ -23,10 +23,8 @@ public:
     void initCloth(int width, int height, float spacing); // setup the initial position of the particles  and the inital position of the springs
     void createMass(int width, int height, float spacing); // Created to modularize the responsibility of initCloth
     void createSpringConnections(int numMassWidth, int numMassHeigth); // function created to identify the spring conecctions with the mass in the system( unique connections now)
-    void printConnectionsMap ();
-    void createSpring();
+    void printConnectionsMap();
+    void createSpring(float spacing);
     // void drawCloth();
 };
-
-
 #endif
