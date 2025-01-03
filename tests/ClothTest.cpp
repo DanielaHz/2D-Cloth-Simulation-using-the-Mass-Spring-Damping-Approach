@@ -74,75 +74,36 @@ TEST(Cloth, createMass)
     }
 }
 
-TEST (Cloth, createSpringConnectionsTestOneMass)
-{ // I used ChatGPT to test this function!!
+TEST (Cloth, createSpringConnectionsTestOneMass3X3Grid)
+{ 
     Cloth c;
     int numMassWidth = 3;
     int numMassHeight = 3;
 
     c.createSpringConnections(numMassWidth, numMassHeight);
 
-    std::pair<int, int> mass5 = {1, 1};
-    std::vector<std::pair<int, int>> expectedNeighbors = {
-        {0, 1}, {2, 1}, {1, 0}, {1, 2},
-        {0, 0}, {0, 2}, {2, 0}, {2, 2}
-    };
+    int mass0 = 0;
+    std::vector<int> expectedNeighbors = {1, 3, 4}; // Unique connections
 
     // Search for the mass conecctions
-    ASSERT_TRUE(c.connections.find(mass5) != c.connections.end()) << "mass not found!";
-    const auto& neighbors = c.connections[mass5];
+    ASSERT_TRUE(c.uniqueConnections.find(mass0) != c.uniqueConnections.end()) << "mass not found!";
+    
+    const auto& neighbors = c.uniqueConnections[mass0];
 
     // Find if all the connections are there
     for (const auto& neighbor : expectedNeighbors) {
-        ASSERT_TRUE(std::find(neighbors.begin(), neighbors.end(), neighbor) != neighbors.end())
-            << "Missing neighbor: (" << neighbor.first << ", " << neighbor.second << ")";
-    }
-}
-
-TEST (Cloth, createSpringConnectionsTestAllMass)
-{
-    // I used ChatGPT to test this function!!
-    Cloth c;
-    int numMassWidth = 3;
-    int numMassHeight = 3;
-
-    c.createSpringConnections(numMassWidth, numMassHeight);
-
-    // Iterate through all masses in the 3x3 grid
-    for (int i = 0; i < numMassHeight; ++i) {
-        for (int j = 0; j < numMassWidth; ++j) {
-            std::pair<int, int> mass = {i, j};
-            
-            // Create a vector of expected neighbors for each mass
-            std::vector<std::pair<int, int>> expectedNeighbors;
-            
-            // Add neighbors based on the position in the grid
-            if (i > 0) expectedNeighbors.push_back({i - 1, j}); // Neighbor above
-            if (i < numMassHeight - 1) expectedNeighbors.push_back({i + 1, j}); // Neighbor below
-            if (j > 0) expectedNeighbors.push_back({i, j - 1}); // Neighbor to the left
-            if (j < numMassWidth - 1) expectedNeighbors.push_back({i, j + 1}); // Neighbor to the right
-            if (i > 0 && j > 0) expectedNeighbors.push_back({i - 1, j - 1}); // Top-left diagonal
-            if (i > 0 && j < numMassWidth - 1) expectedNeighbors.push_back({i - 1, j + 1}); // Top-right diagonal
-            if (i < numMassHeight - 1 && j > 0) expectedNeighbors.push_back({i + 1, j - 1}); // Bottom-left diagonal
-            if (i < numMassHeight - 1 && j < numMassWidth - 1) expectedNeighbors.push_back({i + 1, j + 1}); // Bottom-right diagonal
-
-            // Search for the mass connections
-            ASSERT_TRUE(c.connections.find(mass) != c.connections.end()) << "Mass not found: (" << mass.first << ", " << mass.second << ")";
-
-            const auto& neighbors = c.connections[mass];
-
-            // Find if all the connections are there
-            for (const auto& neighbor : expectedNeighbors) {
-                ASSERT_TRUE(std::find(neighbors.begin(), neighbors.end(), neighbor) != neighbors.end())
-                    << "Missing neighbor: (" << neighbor.first << ", " << neighbor.second << ") for mass (" << mass.first << ", " << mass.second << ")";
-            }
-        }
-    }
+        ASSERT_TRUE(std::find(neighbors.begin(), neighbors.end(), neighbor) != neighbors.end());}
 }
 
 TEST (Cloth, printConnectionsMap)
 {
+    Cloth c;
+    int numMassWidth = 10;
+    int numMassHeight = 5;
 
+    c.createSpringConnections(numMassWidth, numMassHeight);
+
+    c.printConnectionsMap();
 }
 
 

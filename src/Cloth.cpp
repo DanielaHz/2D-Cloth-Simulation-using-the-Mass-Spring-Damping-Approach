@@ -31,31 +31,72 @@ void Cloth::createMass(int width, int height, float spacing)
 
         // creating the mass
         Mass m1(initPos, isFixed);
-
         massInSystem.push_back(m1);
     }
 }
 
 void Cloth::createSpringConnections(int numMassWidth, int numMassHeight)
 {
+    // I took this function from CHATGPT -- please check the NCCA Reference! at the end of the project
+    std::set<std::pair<int, int>> uniqueCon;  // set to track unique connections
+
     for (int i = 0; i < numMassHeight; ++i) 
     {
         for (int j = 0; j < numMassWidth; ++j) 
         {
-            std::vector<std::pair<int, int>> neighbors;
+            std::vector<int> neighbors; 
+            int currentIndex = i * numMassWidth + j;
 
-            if (i + 1 < numMassHeight) {neighbors.emplace_back(i + 1, j);} // Neighbor below
-            if (i - 1 >= 0) {neighbors.emplace_back(i - 1, j);} // Neighbor above
-            if (j + 1 < numMassWidth) {neighbors.emplace_back(i, j + 1);} // Neighbor right
-            if (j - 1 >= 0) {neighbors.emplace_back(i, j - 1);} // Neighbor left
-            if (i + 1 < numMassHeight && j + 1 < numMassWidth) {neighbors.emplace_back(i + 1, j + 1);} // Neighbor diagonally below-right
-            if (i + 1 < numMassHeight && j - 1 >= 0) {neighbors.emplace_back(i + 1, j - 1);} // Neighbor diagonally below-left
-            if (i - 1 >= 0 && j + 1 < numMassWidth) {neighbors.emplace_back(i - 1, j + 1);} //  Neighbor diagonally above-righ
-            if (i - 1 >= 0 && j - 1 >= 0) {neighbors.emplace_back(i - 1, j - 1);} //  Neighbor diagonally above-left
+            std::vector<std::pair<int, int>> potentialNeighbors = {
+                {i + 1, j},     // above
+                {i - 1, j},     // below
+                {i, j + 1},     // right
+                {i, j - 1},     // left
+                {i + 1, j + 1}, // Diagonal above-right
+                {i + 1, j - 1}, // Diagonal above-left
+                {i - 1, j + 1}, // Diagonal below-right
+                {i - 1, j - 1}  // Diagonal below-left
+            };
 
-            // Asignar la lista de vecinos al mapa
-            connections[{i, j}] = neighbors;
+            for (const auto& neighbor : potentialNeighbors) 
+            {
+                int ni = neighbor.first;
+                int nj = neighbor.second;
+
+                // Validate if the potencial neighbor exist
+                if (ni >= 0 && ni < numMassHeight && nj >= 0 && nj < numMassWidth) 
+                {
+                    int neighborIndex = ni * numMassWidth + nj; // calculate the index of the neighbor
+
+                    // Make the connection using in the index
+                    std::pair<int, int> connection = std::make_pair(currentIndex, neighborIndex);
+                    std::pair<int, int> reverseConnection = std::make_pair(neighborIndex, currentIndex);
+
+                    // add the conecction if it doesnt track it
+                    if (uniqueCon.find(connection) == uniqueCon.end() && 
+                        uniqueCon.find(reverseConnection) == uniqueCon.end()) 
+                    {
+                        uniqueCon.insert(connection);
+                        neighbors.push_back(neighborIndex);
+                    }
+                }
+            }
+            uniqueConnections[currentIndex] = neighbors;
         }
+    }
+}
+
+void Cloth::printConnectionsMap()
+{
+    for (auto e : uniqueConnections)
+    {
+        auto key = e.first; 
+        auto value = e.second;
+
+        std::cout << "The key value is: " << key << " ";
+        std::cout << "The second value is: ";
+        for (auto pair : value) {
+            std::cout << pair << " "; }std::cout << "\n"; 
     }
 }
 
