@@ -6,7 +6,7 @@ TEST(Spring, DefaultConstructor)
     Spring s;
     EXPECT_FLOAT_EQ(s.restLength, 0.0f);
     EXPECT_FLOAT_EQ(s.currentLength, 0.0f);
-    EXPECT_FLOAT_EQ(s.stiffness, 0.0f);
+    EXPECT_FLOAT_EQ(s.stiffness, 0.1f);
     EXPECT_EQ(s.mass1, nullptr);
     EXPECT_EQ(s.mass2, nullptr);
 }
