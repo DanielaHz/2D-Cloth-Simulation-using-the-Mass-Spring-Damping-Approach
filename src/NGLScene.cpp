@@ -11,7 +11,7 @@
 NGLScene::NGLScene()
 {
   // re-size the widget to that of the parent (in this case the GLFrame passed in on construction)
-  setTitle("Cloth Simulation");
+  setTitle("2D Cloth Simulation");
 }
 
 
@@ -41,14 +41,11 @@ void NGLScene::initializeGL()
   // enable multisampling for smoother drawing
   glEnable(GL_MULTISAMPLE);
 
-  // Cloth is temporarily initialized here until the simulation class is implemented, for now it serves to see if the drawCloth logic works
-  m_cloth = std::make_unique<Cloth>(); 
+  m_simulation = std::make_unique<Simulation>(100, 100, 30.0f); 
 
   m_view = ngl::lookAt({620.0f, 360.0f, 1000.0f}, {620.0f, 360.0f, 0.0f}, {0, 1.0f, 0});
   ngl::ShaderLib::loadShader("Mass-SpringShader", "shaders/Mass-SpringVertex.glsl", "shaders/Mass-SpringFragment.glsl");
-  m_cloth->initCloth(100,100,30.0f); // 3x3 grid for now
 }
-
 
 
 void NGLScene::paintGL()
@@ -60,8 +57,7 @@ void NGLScene::paintGL()
   ngl::ShaderLib::use("Mass-SpringShader");
   ngl::ShaderLib::setUniform("MVP", m_project*m_view);
 
-  // Temporarily created to visualize the drawcloth function
-  m_cloth->drawCloth();
+  m_simulation->render();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
