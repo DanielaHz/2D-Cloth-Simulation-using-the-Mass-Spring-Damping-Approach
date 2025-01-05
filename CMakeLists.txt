@@ -60,7 +60,7 @@ target_sources(${TargetName} PRIVATE
 			${PROJECT_SOURCE_DIR}/include/NGLScene.h
             ${PROJECT_SOURCE_DIR}/include/Mass.h    
             ${PROJECT_SOURCE_DIR}/include/Spring.h
-            ${PROJECT_SOURCE_DIR}/include/Cloth.h    
+            ${PROJECT_SOURCE_DIR}/include/Cloth.h        
 )
 
 target_link_libraries(${TargetName} PRIVATE Qt::Widgets Qt::OpenGL NGL)
@@ -85,8 +85,8 @@ target_link_libraries(ClothSimulationTests PRIVATE GTest::gtest GTest::gtest_mai
 gtest_discover_tests(ClothSimulationTests)
 #-------------------------------------------------------------------------------------------
 
-#add_custom_target(${TargetName}CopyShaders ALL
-#    COMMAND ${CMAKE_COMMAND} -E copy_directory
-#    ${CMAKE_CURRENT_SOURCE_DIR}/shaders
-#    $<TARGET_FILE_DIR:${TargetName}>/shaders
-#)
+add_custom_target(${TargetName}CopyShaders ALL
+   COMMAND ${CMAKE_COMMAND} -E copy_directory
+   ${CMAKE_CURRENT_SOURCE_DIR}/shaders
+   $<TARGET_FILE_DIR:${TargetName}>/shaders
+)
