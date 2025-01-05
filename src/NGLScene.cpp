@@ -5,6 +5,8 @@
 #include <ngl/NGLInit.h>
 #include <ngl/VAOPrimitives.h>
 #include <iostream>
+#include <ngl/ShaderLib.h>
+#include <ngl/Util.h>
 
 NGLScene::NGLScene()
 {
@@ -24,6 +26,7 @@ void NGLScene::resizeGL(int _w , int _h)
 {
   m_win.width  = static_cast<int>( _w * devicePixelRatio() );
   m_win.height = static_cast<int>( _h * devicePixelRatio() );
+  m_project = ngl::perspective(45.0f, float(_w) / float(_h), 0.01f, 2000.0f);
 }
 
 
@@ -32,12 +35,18 @@ void NGLScene::initializeGL()
   // we must call that first before any other GL commands to load and link the
   // gl commands from the lib, if that is not done program will crash
   ngl::NGLInit::initialize();
-  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);			   // black Background
+  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);			   // black Background or white?
   // enable depth testing for drawing
   glEnable(GL_DEPTH_TEST);
   // enable multisampling for smoother drawing
   glEnable(GL_MULTISAMPLE);
 
+  // Cloth is temporarily initialized here until the simulation class is implemented, for now it serves to see if the drawCloth logic works
+  m_cloth = std::make_unique<Cloth>(); 
+
+  m_view = ngl::lookAt({620.0f, 360.0f, 1000.0f}, {620.0f, 360.0f, 0.0f}, {0, 1.0f, 0});
+  ngl::ShaderLib::loadShader("Mass-SpringShader", "shaders/Mass-SpringVertex.glsl", "shaders/Mass-SpringFragment.glsl");
+  m_cloth->initCloth(100,100,30.0f); // 3x3 grid for now
 }
 
 
@@ -48,6 +57,11 @@ void NGLScene::paintGL()
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glViewport(0,0,m_win.width,m_win.height);
 
+  ngl::ShaderLib::use("Mass-SpringShader");
+  ngl::ShaderLib::setUniform("MVP", m_project*m_view);
+
+  // Temporarily created to visualize the drawcloth function
+  m_cloth->drawCloth();
 }
 
 //----------------------------------------------------------------------------------------------------------------------

@@ -1,6 +1,8 @@
 #ifndef NGLSCENE_H_
 #define NGLSCENE_H_
 #include <ngl/Vec3.h>
+#include "Cloth.h"
+#include <ngl/Transformation.h>
 #include "WindowParams.h"
 // this must be included after NGL includes else we get a clash with gl libs
 #include <QOpenGLWindow>
@@ -78,7 +80,9 @@ private:
     WinParams m_win;
     /// position for our model
     ngl::Vec3 m_modelPos;
-
+    std::unique_ptr<Cloth> m_cloth; // temporarily created to visualize DrawCloth function
+    ngl::Mat4 m_view;
+    ngl::Mat4 m_project;
 };
 
 
