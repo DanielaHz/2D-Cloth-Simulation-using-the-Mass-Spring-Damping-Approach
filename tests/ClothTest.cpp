@@ -2,31 +2,6 @@
 #include "Cloth.h"
 #include <iostream>
 
-// TEST(Cloth, InitCloth)
-// {
-//     std::vector<Mass> massInSystem;
-//     std::vector<Spring>spingInSystem;
-
-//     // receive this data as arguments
-//     int width = 10;
-//     int height = 10;
-//     float spacing = 3;
-//     int windowWidth = 1240;
-
-//     //Create a cloth 
-//     Cloth c;
-//     // call placeMass
-//     c.placeMass(width, height,spacing);
-
-//     // call the placeSpring
-//     c.placeSpring();
-
-//     // pass the data to be render in the window
-//     c.DrawCloth();
-
-//     // The end is to display the grid of the mass in the window
-// }
-
 TEST(Cloth, createMass)
 {
     int width = 10;
@@ -39,7 +14,7 @@ TEST(Cloth, createMass)
     int totalMass = numMassWidth * numMassHeight;
 
     float initX = (windowWidth - width) / 2;
-    float initY = 100.0f;
+    float initY = 650.0f;
     float posZ = 0.0f;
 
     Cloth c;
@@ -60,7 +35,7 @@ TEST(Cloth, createMass)
 
         // Expected values
         float expectedX = initX + col * spacing;
-        float expectedY = initY + row * spacing;
+        float expectedY = initY - row * spacing;
 
         EXPECT_EQ(c.massInSystem[i].initPosition.m_x, expectedX);
         EXPECT_EQ(c.massInSystem[i].initPosition.m_y, expectedY);
@@ -131,19 +106,4 @@ TEST(Cloth, createSpring)
         expectedSprings += e.second.size();
     }
     ASSERT_EQ(c.springInSystem.size(), expectedSprings);
-}
-
-TEST(Cloth, validateSpringMassConnection)
-{
-
-}
-
-TEST(Cloth, validateSpringMassPosition)
-{
-
-}
-
-TEST(Cloth, DrawCloth)
-{
-    
 }
