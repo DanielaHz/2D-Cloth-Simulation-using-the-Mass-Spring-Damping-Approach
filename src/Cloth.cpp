@@ -2,7 +2,40 @@
 
 void Cloth::initCloth(int width, int height, float spacing)
 {
-    
+    std::cout << "Initializing cloth\n";
+
+    int numMassWidth =  static_cast<int>(width/spacing);
+    int numMassHeight = static_cast<int>(height/spacing);
+
+    createMass(width, height, spacing);
+    createSpringConnections(numMassWidth, numMassHeight);
+    createSpring(spacing);
+
+    if (massInSystem.empty())
+    {
+        std::cerr << "Error: massInSystem is empty after to createMass\n";
+        return;
+    }
+
+    if (springInSystem.empty())
+    {
+        std::cerr << "Error: springInSystem is empty after to createSpring\n";
+        return;
+    }
+
+    // Initializing the VAO for mass
+    m_massVAO = ngl::VAOFactory::createVAO(ngl::simpleVAO, GL_POINTS);
+    m_massVAO->bind();
+    m_massVAO->setNumIndices(massInSystem.size());
+    m_massVAO->unbind();
+
+    // Initializing the VAO for springs
+    m_springVAO = ngl::VAOFactory::createVAO(ngl::simpleVAO, GL_LINES);
+    m_springVAO->bind();
+    m_springVAO->setNumIndices(springInSystem.size());
+    m_springVAO->unbind();
+
+    std::cout << "VAOs initializing correctly :)\n";
 }
 
 void Cloth::createMass(int width, int height, float spacing)
@@ -12,7 +45,7 @@ void Cloth::createMass(int width, int height, float spacing)
     int totalMass = numMassWidth * numMassHeight;
 
     float initX = (windowWidth - width)/2;
-    float initY = 100.0f;
+    float initY = 650.0f;
     float initZ = 0.0f;
 
     for (int i = 0; i < totalMass; i++)
@@ -21,7 +54,7 @@ void Cloth::createMass(int width, int height, float spacing)
         int col = i % numMassWidth; 
 
         float x = initX + col * spacing;  
-        float y = initY + row * spacing;  
+        float y = initY - row * spacing;  
         float z = initZ;            
 
         // Creating the ngl::Vec3 position  
@@ -119,3 +152,68 @@ void Cloth::createSpring(float spacing)
     }
 }
 
+void Cloth::drawCloth()
+{
+    std::cout << "Executing the drawCloth here!!!" << "\n";
+
+    drawMass();
+    drawSpring();
+
+    std::cout << "Finishing the drawCloth execution here!!!" << "\n";
+}
+
+void Cloth::drawMass()
+{
+    std::cout << "Drawing the mass in the system" << "\n";
+
+    // transform the data of initPosition in massInSystem to a GLfloat vector
+    std::vector<GLfloat> vertexData;
+    for (const auto& mass : massInSystem)
+    {
+        vertexData.push_back(mass.initPosition.m_x);
+        vertexData.push_back(mass.initPosition.m_y);
+        vertexData.push_back(mass.initPosition.m_z);
+    }
+
+    for (size_t i = 0; i < vertexData.size(); i += 3)
+    {
+        std::cout << "Mass: " << i / 3 << ": (" << vertexData[i] << ", " << vertexData[i + 1] << ", " << vertexData[i + 2] << ")\n";
+    }
+
+    glPointSize(5.0f); 
+    m_massVAO->bind();
+    m_massVAO->setData(ngl::AbstractVAO::VertexData(vertexData.size() * sizeof(GLfloat), vertexData[0]));
+    m_massVAO->setVertexAttributePointer(0, 3, GL_FLOAT, sizeof(GLfloat) * 3, 0);
+    m_massVAO->setNumIndices(massInSystem.size());
+    m_massVAO->draw();
+    m_massVAO->unbind();
+}
+
+void Cloth::drawSpring()
+{
+    std::cout << "Drawing the springs in the system" << "\n";
+    std::vector<GLfloat> vertexData;
+    for (const auto& Spring : springInSystem)
+    {
+        vertexData.push_back(Spring.mass1->initPosition.m_x);
+        vertexData.push_back(Spring.mass1->initPosition.m_y);
+        vertexData.push_back(Spring.mass1->initPosition.m_z);
+
+        vertexData.push_back(Spring.mass2->initPosition.m_x);
+        vertexData.push_back(Spring.mass2->initPosition.m_y);
+        vertexData.push_back(Spring.mass2->initPosition.m_z);
+    }
+
+    for (size_t i = 0; i < vertexData.size(); i += 6)
+    {
+        std::cout << "Spring: " << i / 6 << ": Start(" << vertexData[i] << ", " << vertexData[i + 1] << ", " << vertexData[i + 2] << ") "
+                  << "End(" << vertexData[i + 3] << ", " << vertexData[i + 4] << ", " << vertexData[i + 5] << ")\n";
+    }
+
+    m_springVAO->bind();
+    m_springVAO->setData(ngl::AbstractVAO::VertexData(vertexData.size() * sizeof(GLfloat), vertexData[0]));
+    m_springVAO->setVertexAttributePointer(0, 3, GL_FLOAT, sizeof(GLfloat) * 3, 0);
+    m_springVAO->setNumIndices(springInSystem.size() * 2);
+    m_springVAO->draw();
+    m_springVAO->unbind();
+}

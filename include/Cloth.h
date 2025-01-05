@@ -8,6 +8,9 @@
 #include <utility> 
 #include <iostream>
 #include <set>
+#include <ngl/AbstractVAO.h>
+#include <ngl/VAOFactory.h>
+#include <memory>
 
 class Cloth {
 public:
@@ -18,6 +21,8 @@ public:
     std::vector<Mass> massInSystem;
     std::vector<Spring> springInSystem;
     std::map<int, std::vector<int>> uniqueConnections;
+    std::unique_ptr<ngl::AbstractVAO> m_massVAO;
+    std::unique_ptr<ngl::AbstractVAO> m_springVAO;
     ngl::Vec3 gravity = {0.0f, -9.8f, 0.0f};
 
     void initCloth(int width, int height, float spacing); // setup the initial position of the particles  and the inital position of the springs
@@ -25,6 +30,8 @@ public:
     void createSpringConnections(int numMassWidth, int numMassHeigth); // function created to identify the spring conecctions with the mass in the system( unique connections now)
     void printConnectionsMap();
     void createSpring(float spacing);
-    // void drawCloth();
+    void drawCloth(); // call the function to draw the mass and the springs
+    void drawMass();
+    void drawSpring(); 
 };
 #endif
