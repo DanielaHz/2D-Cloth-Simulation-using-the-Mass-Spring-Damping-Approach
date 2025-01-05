@@ -57,10 +57,12 @@ target_sources(${TargetName} PRIVATE
             ${PROJECT_SOURCE_DIR}/src/Mass.cpp
             ${PROJECT_SOURCE_DIR}/src/Spring.cpp
             ${PROJECT_SOURCE_DIR}/src/Cloth.cpp
+            ${PROJECT_SOURCE_DIR}/src/Simulation.cpp
 			${PROJECT_SOURCE_DIR}/include/NGLScene.h
             ${PROJECT_SOURCE_DIR}/include/Mass.h    
             ${PROJECT_SOURCE_DIR}/include/Spring.h
-            ${PROJECT_SOURCE_DIR}/include/Cloth.h        
+            ${PROJECT_SOURCE_DIR}/include/Cloth.h 
+            ${PROJECT_SOURCE_DIR}/include/Simulation.h        
 )
 
 target_link_libraries(${TargetName} PRIVATE Qt::Widgets Qt::OpenGL NGL)
