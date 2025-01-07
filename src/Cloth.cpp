@@ -217,3 +217,11 @@ void Cloth::drawSpring()
     m_springVAO->draw();
     m_springVAO->unbind();
 }
+
+ngl::Vec3 Cloth::calcGravityForce()
+{
+    // All masses have the same value, and gravity is constant,
+    // so it is more efficient to calculate the force once and reuse it for all masses
+    float mass =  massInSystem[0].mass;
+    return mass * gravity;
+}

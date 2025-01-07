@@ -107,3 +107,22 @@ TEST(Cloth, createSpring)
     }
     ASSERT_EQ(c.springInSystem.size(), expectedSprings);
 }
+
+TEST(Cloth, calcGravityForce)
+{
+    int width = 10;
+    int height = 10;
+    float spacing = 3;
+    Cloth c;
+    c.createMass(width, height, spacing);
+    ngl::Vec3 gForce = c.calcGravityForce();
+
+    ngl::Vec3 gravity = {0.0f, -9.8f, 0.0f};
+    float m1Mass = c.massInSystem[0].mass;
+    ngl::Vec3 gForceExpected = gravity * m1Mass;
+
+    EXPECT_FLOAT_EQ(gForce.m_x, gForceExpected.m_x);
+    EXPECT_FLOAT_EQ(gForce.m_y, gForceExpected.m_y);
+    EXPECT_FLOAT_EQ(gForce.m_z, gForceExpected.m_z);
+}
+

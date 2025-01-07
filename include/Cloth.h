@@ -21,9 +21,8 @@ public:
     std::vector<Mass> massInSystem;
     std::vector<Spring> springInSystem;
     std::map<int, std::vector<int>> uniqueConnections;
-    std::unique_ptr<ngl::AbstractVAO> m_massVAO;
-    std::unique_ptr<ngl::AbstractVAO> m_springVAO;
     ngl::Vec3 gravity = {0.0f, -9.8f, 0.0f};
+    float drag = 0.05f; // drag constant is a value between 0.01 to 0.5
 
     void initCloth(int width, int height, float spacing); // setup the initial position of the particles  and the inital position of the springs
     void createMass(int width, int height, float spacing); // Created to modularize the responsibility of initCloth
@@ -33,5 +32,12 @@ public:
     void drawCloth(); // call the function to draw the mass and the springs
     void drawMass();
     void drawSpring(); 
+
+    // Simulation part calculate forces and calling the RK4 time integrator
+    ngl::Vec3 calcGravityForce();
+
+private: 
+    std::unique_ptr<ngl::AbstractVAO> m_massVAO;
+    std::unique_ptr<ngl::AbstractVAO> m_springVAO;
 };
 #endif
