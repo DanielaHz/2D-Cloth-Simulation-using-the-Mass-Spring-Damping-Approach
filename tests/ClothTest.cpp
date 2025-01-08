@@ -79,6 +79,8 @@ TEST (Cloth, printConnectionsMap)
     c.createSpringConnections(numMassWidth, numMassHeight);
 
     c.printConnectionsMap();
+    std::cout << "print all the connections map: " << "\n";
+    c.printAllConnections();
 }
 
 TEST(Cloth, createSpring)
@@ -114,10 +116,9 @@ TEST(Cloth, calcGravityForce)
     int height = 10;
     float spacing = 3;
     Cloth c;
-    c.createMass(width, height, spacing);
-    ngl::Vec3 gForce = c.calcGravityForce();
-
     ngl::Vec3 gravity = {0.0f, -9.8f, 0.0f};
+    c.createMass(width, height, spacing);
+    ngl::Vec3 gForce = c.calcGravityForce(gravity, c.massInSystem[0].mass);
     float m1Mass = c.massInSystem[0].mass;
     ngl::Vec3 gForceExpected = gravity * m1Mass;
 
@@ -126,3 +127,100 @@ TEST(Cloth, calcGravityForce)
     EXPECT_FLOAT_EQ(gForce.m_z, gForceExpected.m_z);
 }
 
+TEST (Cloth, calcDragForce)
+{
+    int width = 10;
+    int height = 10;
+    float spacing = 3;
+    Cloth c;
+    float drag = 0.05f;
+    c.createMass(width, height, spacing);
+    ngl::Vec3 dForce = c.calcDragForce(c.massInSystem[0].velocity, drag);
+
+    ngl::Vec3 velocity =  c.massInSystem[0].velocity;
+    ngl::Vec3 dForceExpected = -1 * (velocity * drag);
+
+    EXPECT_FLOAT_EQ(dForce.m_x, dForceExpected.m_x);
+    EXPECT_FLOAT_EQ(dForce.m_y, dForceExpected.m_y);
+    EXPECT_FLOAT_EQ(dForce.m_z, dForceExpected.m_z);
+}
+
+TEST(Cloth, calcSpringForce)
+{
+    Cloth c;
+
+    // Define test inputs
+    ngl::Vec3 distance(1.0f, 2.0f, 3.0f);
+    float stiffness = 10.0f;
+
+    // Call the function to test
+    ngl::Vec3 result = c.calcSpringForce(distance, stiffness);
+
+    // Define expected output
+    ngl::Vec3 expectedForce = ngl::Vec3(-10.0f, -20.0f, -30.0f);
+
+    // Verify the results
+    EXPECT_NEAR(result.m_x, expectedForce.m_x, 1e-5);
+    EXPECT_NEAR(result.m_y, expectedForce.m_y, 1e-5);
+    EXPECT_NEAR(result.m_z, expectedForce.m_z, 1e-5);
+}
+
+TEST(Cloth, calcSpringForce2)
+{
+    Cloth c;
+
+    // Define test inputs
+    ngl::Vec3 distance(4.0f, -2.0f, 1.5f);
+    float stiffness = 5.0f;
+
+    // Call the function to test
+    ngl::Vec3 result = c.calcSpringForce(distance, stiffness);
+
+    // Define expected output
+    ngl::Vec3 expectedForce = ngl::Vec3(-20.0f, 10.0f, -7.5f);
+
+    // Verify the results
+    EXPECT_NEAR(result.m_x, expectedForce.m_x, 1e-5);
+    EXPECT_NEAR(result.m_y, expectedForce.m_y, 1e-5);
+    EXPECT_NEAR(result.m_z, expectedForce.m_z, 1e-5);
+}
+
+TEST(Cloth, evalF)
+{
+    int width = 10;
+    int height = 10;
+    float spacing = 3.0f;
+    int windowWidth = 1240;
+
+    int numMassWidth = static_cast<int>(width / spacing);
+    int numMassHeight = static_cast<int>(height / spacing);
+    int totalMass = numMassWidth * numMassHeight;
+
+    float initX = (windowWidth - width) / 2;
+    float initY = 100.0f;
+    float posZ = 0.0f;
+
+    Cloth c;
+    c.createMass(width, height, spacing);
+    c.createSpringConnections(numMassWidth, numMassHeight);
+    c.createSpring(spacing);
+
+    // Set initial conditions for the test
+    for (int i = 0; i < totalMass; ++i)
+    {
+        c.massInSystem[i].mass = 1.0f; // Set mass to 1.0 for simplicity
+        c.massInSystem[i].velocity = ngl::Vec3(0.0f, 0.0f, 0.0f); // Initial velocity
+    }
+
+    // Call the function to test
+    c.evalF();
+
+    // Verify the results
+    for (int i = 0; i < totalMass; ++i)
+    {
+        ngl::Vec3 expectedForce = ngl::Vec3(0.0f, -9.81f, 0.0f); // Example expected force due to gravity
+        EXPECT_NEAR(c.finalForces[i].m_x, expectedForce.m_x, 1e-4);
+        EXPECT_NEAR(c.finalForces[i].m_y, expectedForce.m_y, 1e-4);
+        EXPECT_NEAR(c.finalForces[i].m_z, expectedForce.m_z, 1e-4);
+    }
+}

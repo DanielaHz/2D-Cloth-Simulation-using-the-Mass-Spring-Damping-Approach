@@ -105,6 +105,8 @@ void Cloth::createSpringConnections(int numMassWidth, int numMassHeight)
                     std::pair<int, int> connection = std::make_pair(currentIndex, neighborIndex);
                     std::pair<int, int> reverseConnection = std::make_pair(neighborIndex, currentIndex);
 
+                    allConnections[currentIndex].push_back(neighborIndex);
+
                     // add the conecction if it doesnt track it
                     if (uniqueCon.find(connection) == uniqueCon.end() && 
                         uniqueCon.find(reverseConnection) == uniqueCon.end()) 
@@ -122,6 +124,20 @@ void Cloth::createSpringConnections(int numMassWidth, int numMassHeight)
 void Cloth::printConnectionsMap()
 {
     for (auto e : uniqueConnections)
+    {
+        auto key = e.first; 
+        auto value = e.second;
+
+        std::cout << "The key value is: " << key << " ";
+        std::cout << "The second value is: ";
+        for (auto pair : value) {
+            std::cout << pair << " "; }std::cout << "\n"; 
+    }
+}
+
+void Cloth::printAllConnections()
+{
+    for (auto e : allConnections)
     {
         auto key = e.first; 
         auto value = e.second;
@@ -218,10 +234,82 @@ void Cloth::drawSpring()
     m_springVAO->unbind();
 }
 
-ngl::Vec3 Cloth::calcGravityForce()
+ngl::Vec3 Cloth::calcGravityForce(ngl::Vec3 gravity, float mass)
 {
-    // All masses have the same value, and gravity is constant,
-    // so it is more efficient to calculate the force once and reuse it for all masses
-    float mass =  massInSystem[0].mass;
     return mass * gravity;
+}
+
+ngl::Vec3 Cloth::calcDragForce(ngl::Vec3 velocity, float drag)
+{
+    return -velocity * drag;
+}
+
+ngl::Vec3 Cloth::calcSpringForce(ngl::Vec3 distance, float stiffness)
+{
+    return -(distance * stiffness);
+}
+
+ngl::Vec3 Cloth::calcFinalForce(ngl::Vec3 gravity, ngl::Vec3 drag, ngl::Vec3 spring)
+{
+    return gravity + drag + spring;
+}
+
+void Cloth::evalF()
+{
+    std::map<int, ngl::Vec3> trackSpringForces; // contain the index of the mass and the final force value acting over the mass
+
+    for (size_t i = 0 ; i < massInSystem.size(); i++)
+    {
+        // calculate gravity
+        std::cout << "-----" << "calculating the gravity force for the mass " << i << "-----" <<"\n";
+        float mass = massInSystem[i].mass;
+        std::cout << "mass : " << i << " have a mass value of: "<<  mass << "\n";
+        ngl::Vec3 massGravity = calcGravityForce( gravity, mass);
+        std::cout << "gravity force of the mass : " << i << " is : " << "(" << massGravity.m_x << "," << massGravity.m_y << "," << massGravity.m_z << ")" << "\n"; 
+
+        // calculate drag
+        std::cout << "-----" <<"calculating the drag force for the mass " << i << "-----" <<"\n";
+        ngl::Vec3 velocity = massInSystem[i].velocity;
+        std::cout << "mass : " << i << " have a velocity value of: (" << velocity.m_x << "," << velocity.m_y << "," <<  velocity.m_z << ")\n";
+        ngl::Vec3 massDrag = calcDragForce(velocity, drag);
+        std::cout << "drag force of the mass : " << i << " is : " << "(" << massDrag.m_x << "," << massDrag.m_y << "," << massDrag.m_z << ")" << "\n"; 
+
+
+        // calculate springs force 
+        std::cout << "-----" <<"calculating the spring forces for the mass " << i << "-----" <<"\n";
+        // first I need to go inside uniqueconnections to identify how many spring are connected to i 
+        int springsOveri =  uniqueConnections[i].size();
+        std::cout << "the number of springs acting over the mass or connected to : " << i << " are : " << springsOveri << "\n";
+
+       // second i go to the the springInSystem vector and i find the distance value and calculate for force 
+        for (int l = 0 ; l < springsOveri; l++)
+        {
+            Spring s1 = springInSystem[l];
+            ngl::Vec3 distance = s1.calculateCurrentLength(s1.mass1, s1.mass2);
+            std::cout << "distance value between the mass connected to the the spring" << l<<  " is: (" << distance.m_x << "," << distance.m_y <<"," << distance.m_z << ")\n";
+            ngl::Vec3 massSpring = calcSpringForce(distance , s1.stiffness);
+            std::cout << "spring force of the mass : " << i << "is: ("<< massSpring.m_x << massSpring.m_y << massSpring.m_z << ")\n";
+            
+            int indexMass1 = i;
+            int indexMass2 = uniqueConnections[i][l];
+
+            std::cout << "index mass " << indexMass1 << "\n";
+            std::cout << "index mass " << indexMass2 << "\n";
+
+            // guardo para i el valor de la fuerza como + y para las particulas conectadas a i la fuerza pero con -
+            trackSpringForces[indexMass1] += massSpring;
+            trackSpringForces[indexMass2] -= massSpring;
+        }
+
+        ngl::Vec3 finalMassSpring = trackSpringForces[i];
+
+        ngl::Vec3 finalForce = calcFinalForce(massGravity, massDrag, finalMassSpring);
+
+        finalForces[i] = finalForce;
+    }
+
+    for (auto e: finalForces)
+    {
+        std::cout << "the mass :" << e.first << " have a final force of: " << e.second.m_x << e.second.m_y << e.second.m_z << "\n";
+    }
 }
