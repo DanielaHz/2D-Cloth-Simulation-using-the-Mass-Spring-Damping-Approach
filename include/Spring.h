@@ -18,7 +18,7 @@ public:
     ~Spring() = default;
 
     ngl::Vec3 getMassPosition(std::shared_ptr<Mass> m);
-    float calculateCurrentLength(std::shared_ptr<Mass> m1, std::shared_ptr<Mass> m2);
+    ngl::Vec3 calculateCurrentLength(std::shared_ptr<Mass> m1, std::shared_ptr<Mass> m2);
 
 };
 #endif
