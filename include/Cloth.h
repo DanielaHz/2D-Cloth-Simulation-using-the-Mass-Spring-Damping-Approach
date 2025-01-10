@@ -11,6 +11,7 @@
 #include <ngl/AbstractVAO.h>
 #include <ngl/VAOFactory.h>
 #include <memory>
+#include "TimeIntegrator.h"
 
 class Cloth {
 public:
@@ -40,10 +41,10 @@ public:
     // Simulation part, calculate forces and calling the RK4 time integrator
     ngl::Vec3 calcGravityForce(ngl::Vec3 gravity, float mass); 
     ngl::Vec3 calcDragForce(ngl::Vec3 velocity, float drag);
-    ngl::Vec3 calcSpringForce(ngl::Vec3 distance, float stiffness);
+    ngl::Vec3 calcSpringForce(float distance, float stiffness, ngl::Vec3 direction);
     ngl::Vec3 calcFinalForce(ngl::Vec3 gravity, ngl::Vec3 drag, ngl::Vec3 spring);
-    void evalF();// calculate forces , calculate final one and request new state and update new state
-
+    void evaluateForces();// calculate forces , calculate final one and request new state and update new state
+    void requestNewState(float t, float dt); //  give me the new state(position and velocity) per mass
 private: 
     std::unique_ptr<ngl::AbstractVAO> m_massVAO;
     std::unique_ptr<ngl::AbstractVAO> m_springVAO;

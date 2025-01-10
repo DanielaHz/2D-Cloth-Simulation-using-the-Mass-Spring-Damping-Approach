@@ -161,8 +161,12 @@ void Cloth::createSpring(float spacing)
             // accedo a las masas que estan en el vector MassInSystem
             auto mass1 = std::make_shared<Mass>(massInSystem[mass1Index]);
             auto mass2 = std::make_shared<Mass>(massInSystem[mass2Index]);
+
+            // calcula segun la posicion cuanto debria ser el spacing del resorte;
+            float distance = (mass1->initPosition - mass2->initPosition).length();
+            std::cout << "distance between particles is : " << distance << "\n";
             // creo spring
-            Spring s(spacing, mass1, mass2);
+            Spring s(distance, mass1, mass2);
             springInSystem.push_back(s);
         }
     }
@@ -182,13 +186,13 @@ void Cloth::drawMass()
 {
     std::cout << "Drawing the mass in the system" << "\n";
 
-    // transform the data of initPosition in massInSystem to a GLfloat vector
+    // transform the data of position in massInSystem to a GLfloat vector
     std::vector<GLfloat> vertexData;
     for (const auto& mass : massInSystem)
     {
-        vertexData.push_back(mass.initPosition.m_x);
-        vertexData.push_back(mass.initPosition.m_y);
-        vertexData.push_back(mass.initPosition.m_z);
+        vertexData.push_back(mass.position.m_x);
+        vertexData.push_back(mass.position.m_y);
+        vertexData.push_back(mass.position.m_z);
     }
 
     for (size_t i = 0; i < vertexData.size(); i += 3)
@@ -211,13 +215,13 @@ void Cloth::drawSpring()
     std::vector<GLfloat> vertexData;
     for (const auto& Spring : springInSystem)
     {
-        vertexData.push_back(Spring.mass1->initPosition.m_x);
-        vertexData.push_back(Spring.mass1->initPosition.m_y);
+        vertexData.push_back(Spring.mass1->position.m_x);
+        vertexData.push_back(Spring.mass1->position.m_y);
         vertexData.push_back(Spring.mass1->initPosition.m_z);
 
-        vertexData.push_back(Spring.mass2->initPosition.m_x);
-        vertexData.push_back(Spring.mass2->initPosition.m_y);
-        vertexData.push_back(Spring.mass2->initPosition.m_z);
+        vertexData.push_back(Spring.mass2->position.m_x);
+        vertexData.push_back(Spring.mass2->position.m_y);
+        vertexData.push_back(Spring.mass2->position.m_z);
     }
 
     for (size_t i = 0; i < vertexData.size(); i += 6)
@@ -244,9 +248,9 @@ ngl::Vec3 Cloth::calcDragForce(ngl::Vec3 velocity, float drag)
     return -velocity * drag;
 }
 
-ngl::Vec3 Cloth::calcSpringForce(ngl::Vec3 distance, float stiffness)
+ngl::Vec3 Cloth::calcSpringForce(float deformation, float stiffness, ngl::Vec3 direction)
 {
-    return -(distance * stiffness);
+    return -(deformation * stiffness * direction);
 }
 
 ngl::Vec3 Cloth::calcFinalForce(ngl::Vec3 gravity, ngl::Vec3 drag, ngl::Vec3 spring)
@@ -254,7 +258,7 @@ ngl::Vec3 Cloth::calcFinalForce(ngl::Vec3 gravity, ngl::Vec3 drag, ngl::Vec3 spr
     return gravity + drag + spring;
 }
 
-void Cloth::evalF()
+void Cloth::evaluateForces()
 {
     std::map<int, ngl::Vec3> trackSpringForces; // contain the index of the mass and the final force value acting over the mass
 
@@ -285,10 +289,14 @@ void Cloth::evalF()
         for (int l = 0 ; l < springsOveri; l++)
         {
             Spring s1 = springInSystem[l];
-            ngl::Vec3 distance = s1.calculateCurrentLength(s1.mass1, s1.mass2);
-            std::cout << "distance value between the mass connected to the the spring" << l<<  " is: (" << distance.m_x << "," << distance.m_y <<"," << distance.m_z << ")\n";
-            ngl::Vec3 massSpring = calcSpringForce(distance , s1.stiffness);
-            std::cout << "spring force of the mass : " << i << "is: ("<< massSpring.m_x << massSpring.m_y << massSpring.m_z << ")\n";
+            ngl::Vec3 distance = s1.getMassPosition(s1.mass2) - s1.getMassPosition(s1.mass1); 
+            float currentLength = s1.calculateCurrentLength(s1.mass1, s1.mass2);
+            std::cout << "current length of the spring : " << currentLength << "\n";
+            float deformation = currentLength - s1.restLength;
+            std::cout << "deformation of the spring : " << deformation << "\n";
+            ngl::Vec3 direction = distance / currentLength;
+            ngl::Vec3 massSpring = calcSpringForce(deformation , s1.stiffness, direction);
+            std::cout << "spring force of the mass : " << i << "is: ("<< massSpring.m_x << "," << massSpring.m_y << ","<< massSpring.m_z << ")\n";
             
             int indexMass1 = i;
             int indexMass2 = uniqueConnections[i][l];
@@ -310,6 +318,35 @@ void Cloth::evalF()
 
     for (auto e: finalForces)
     {
-        std::cout << "the mass :" << e.first << " have a final force of: " << e.second.m_x << e.second.m_y << e.second.m_z << "\n";
+        std::cout << "the mass :" << e.first << " have a final force of: (" << e.second.m_x << "," << e.second.m_y << "," <<e.second.m_z << ")\n";
+    }
+}
+
+void Cloth::requestNewState(float t, float dt)
+{
+    for (int i=0; i<massInSystem.size() ; i++)
+    {
+        Mass m1 = massInSystem[i];
+        // create the states for any mass
+        State intialState(m1.position, m1.velocity);
+
+        // take the final force por mass
+        ngl::Vec3 force = finalForces[i];
+        std::cout<< "for the mass " << i << " final force is : " << force.m_x <<  force.m_y << force.m_z << "\n";
+
+        // call the RK4 dani
+        RK4Integrator RK4(intialState);
+        RK4.integrate(t, dt, force);
+
+        State updatedState = RK4.getState();
+
+        ngl::Vec3 positionUpdateState =  updatedState.m_position;
+        ngl::Vec3 velocityUpdateState =  updatedState.m_velocity;
+
+        m1.updateState(positionUpdateState, velocityUpdateState);
+
+        // print the new state
+        std::cout << "update state position: (" << positionUpdateState.m_x << "," << positionUpdateState.m_y << "," <<positionUpdateState.m_z << ")\n";
+        std::cout << "update state velocity: (" << velocityUpdateState.m_x <<  "," << velocityUpdateState.m_y << "," <<velocityUpdateState.m_z << ")\n";
     }
 }
