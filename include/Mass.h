@@ -6,8 +6,8 @@ class Mass {
     public:
         ngl::Vec3 initPosition;
         ngl::Vec3 initVelocity = {0.0f, 0.0f, 0.0f};
-        ngl::Vec3 position = {0.0f, 0.0f, 0.0f};
-        ngl::Vec3 velocity = {0.0f, 0.0f, 0.0f};
+        ngl::Vec3 position = initPosition;
+        ngl::Vec3 velocity = initVelocity;
         float mass = 1.0f; 
         float size = 5.0f;
         bool isFixed = false;

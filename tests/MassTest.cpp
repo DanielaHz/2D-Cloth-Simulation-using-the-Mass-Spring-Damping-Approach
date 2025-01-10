@@ -13,8 +13,8 @@ TEST(Mass, ParametrizedConstructor)
 {
     ngl::Vec3 initPos{1.0f, 2.0f, 0.0f}; // Remember is a 2D animation so z = 0.0f
     ngl::Vec3 initVel{0.1f, 0.2f, 0.0f};
-    ngl::Vec3 pos{4.0f, 5.0f, 0.0f};
-    ngl::Vec3 vel{0.4f, 0.5f, 0.0f};
+    ngl::Vec3 pos = initPos;
+    ngl::Vec3 vel = initVel;
     float mass = 2.0f;
     float size = 10.0f;
     bool isFixed = true;
@@ -32,8 +32,8 @@ TEST(Mass, ParametrizedConstructor)
     //////////////////////////////////////////////////////
     ngl::Vec3 initPosition = {5.0f, 0.0f, 0.0f};
     ngl::Vec3 initVelocity = {0.0f, 0.0f, 0.0f};
-    ngl::Vec3 position = {0.0f, 0.0f, 0.0f};
-    ngl::Vec3 velocity = {0.0f, 0.0f, 0.0f};
+    ngl::Vec3 position = initPosition;
+    ngl::Vec3 velocity = initVelocity;
     float mass2 = 1.0f; 
     float size2 = 5.0f;
 
