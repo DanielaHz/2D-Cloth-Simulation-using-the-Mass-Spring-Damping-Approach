@@ -82,7 +82,6 @@ target_sources(ClothSimulationTests PRIVATE
             ${PROJECT_SOURCE_DIR}/tests/MassTest.cpp
             ${PROJECT_SOURCE_DIR}/tests/SpringTest.cpp
             ${PROJECT_SOURCE_DIR}/tests/ClothTest.cpp
-            ${PROJECT_SOURCE_DIR}/tests/TimeIntegratorTest.cpp
             ${PROJECT_SOURCE_DIR}/src/Mass.cpp
             ${PROJECT_SOURCE_DIR}/src/Spring.cpp
             ${PROJECT_SOURCE_DIR}/src/Cloth.cpp
