@@ -1,0 +1,50 @@
+#ifndef TIMEINTEGRATOR_H_
+#define TIMEINTEGRATOR_H_
+
+#include <ngl/Vec3.h>
+
+// This class was took from the MassSpring DEMO available in NGL, and I adapted to the context of this project
+// ------------------------------------------------------------------------------------------------------------
+
+class State
+{
+    public:
+        ngl::Vec3 m_position;
+        ngl::Vec3 m_velocity;
+        inline State(ngl::Vec3 _pos, ngl::Vec3 _vel) 
+            : m_position(_pos), m_velocity(_vel) {}
+        inline State() {}
+};
+
+/// @brief a simple base class to do RK4 integration this class then needs the motionFunction to be
+/// implemented so we can integrate the values
+
+class RK4Integrator
+{
+    public:
+        RK4Integrator(State _state) 
+            : m_state(_state) {}
+        RK4Integrator() {}
+        
+        State evaluate(const State &_initial, float _t, ngl::Vec3 force);
+        //----------------------------------------------------------------------------------------------------------------------
+        /// @brief method to evaluate the state given initial value and time step
+        /// @param[in] _initial the initial state
+        /// @param[in] _t the current time step value
+        /// @param[in] _dt the delta time step for integration
+        /// @param[in] _d the derivative for the integration step
+        //----------------------------------------------------------------------------------------------------------------------
+        State evaluate(const State &_initial, float _t, float _dt, const State &_d, ngl::Vec3 force);
+        //----------------------------------------------------------------------------------------------------------------------
+        /// @brief method to evaluate the state given initial value and time step
+        /// @param[in] _initial the initial state
+        /// @param[in] _t the current time step value
+        /// @param[in] _dt the delta time step for integration
+        //----------------------------------------------------------------------------------------------------------------------
+        void integrate(float _t, float _dt, ngl::Vec3 force);
+        inline State getState() const { return m_state; }
+    protected:
+        State m_state;
+};
+
+#endif
