@@ -14,10 +14,12 @@ ngl::Vec3 Spring::getMassPosition(std::shared_ptr<Mass> m)
     return {x, y, z};
 }
 
-ngl::Vec3 Spring::calculateCurrentLength( std::shared_ptr<Mass> m1, std::shared_ptr<Mass> m2)
+float Spring::calculateCurrentLength( std::shared_ptr<Mass> m1, std::shared_ptr<Mass> m2)
 {
     ngl::Vec3 pos1 = getMassPosition(m1);
     ngl::Vec3 pos2 = getMassPosition(m2);
 
-    return pos2 - pos1;
+    ngl::Vec3 dis = pos2 - pos1;
+
+    return dis.length();
 }
