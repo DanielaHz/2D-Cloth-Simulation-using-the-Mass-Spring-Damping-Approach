@@ -64,7 +64,9 @@ void Cloth::createMass(int width, int height, float spacing)
 
         // creating the mass
         Mass m1(initPos, isFixed);
-        massInSystem.push_back(m1);
+        // massInSystem.push_back(m1);
+        massInSystem.push_back(std::make_shared<Mass>(m1));
+
     }
 }
 
@@ -149,23 +151,17 @@ void Cloth::printAllConnections()
     }
 }
 
-void Cloth::createSpring(float spacing)
-
-{   // recorre toda las unicas conexiones porque ese es el numero de resorte que dani va a crear
-    for (auto e: uniqueConnections)
-    {
+void Cloth::createSpring(float spacing) {
+    for (auto e : uniqueConnections) {
         auto mass1Index = e.first;
-        auto mass1VecConecctions = e.second;
-        for (auto mass2Index : mass1VecConecctions)
-        {
-            // accedo a las masas que estan en el vector MassInSystem
-            auto mass1 = std::make_shared<Mass>(massInSystem[mass1Index]);
-            auto mass2 = std::make_shared<Mass>(massInSystem[mass2Index]);
+        auto mass1VecConnections = e.second;
+        for (auto mass2Index : mass1VecConnections) {
+            auto mass1 = massInSystem[mass1Index];
+            auto mass2 = massInSystem[mass2Index];
 
-            // calcula segun la posicion cuanto debria ser el spacing del resorte;
             float distance = (mass1->initPosition - mass2->initPosition).length();
             std::cout << "distance between particles is : " << distance << "\n";
-            // creo spring
+
             Spring s(distance, mass1, mass2);
             springInSystem.push_back(s);
         }
@@ -190,9 +186,9 @@ void Cloth::drawMass()
     std::vector<GLfloat> vertexData;
     for (const auto& mass : massInSystem)
     {
-        vertexData.push_back(mass.position.m_x);
-        vertexData.push_back(mass.position.m_y);
-        vertexData.push_back(mass.position.m_z);
+        vertexData.push_back(mass->position.m_x);
+        vertexData.push_back(mass->position.m_y);
+        vertexData.push_back(mass->position.m_z);
     }
 
     for (size_t i = 0; i < vertexData.size(); i += 3)
@@ -217,7 +213,7 @@ void Cloth::drawSpring()
     {
         vertexData.push_back(Spring.mass1->position.m_x);
         vertexData.push_back(Spring.mass1->position.m_y);
-        vertexData.push_back(Spring.mass1->initPosition.m_z);
+        vertexData.push_back(Spring.mass1->position.m_z);
 
         vertexData.push_back(Spring.mass2->position.m_x);
         vertexData.push_back(Spring.mass2->position.m_y);
@@ -266,14 +262,14 @@ void Cloth::evaluateForces()
     {
         // calculate gravity
         std::cout << "-----" << "calculating the gravity force for the mass " << i << "-----" <<"\n";
-        float mass = massInSystem[i].mass;
+        float mass = massInSystem[i]->mass;
         std::cout << "mass : " << i << " have a mass value of: "<<  mass << "\n";
         ngl::Vec3 massGravity = calcGravityForce( gravity, mass);
         std::cout << "gravity force of the mass : " << i << " is : " << "(" << massGravity.m_x << "," << massGravity.m_y << "," << massGravity.m_z << ")" << "\n"; 
 
         // calculate drag
         std::cout << "-----" <<"calculating the drag force for the mass " << i << "-----" <<"\n";
-        ngl::Vec3 velocity = massInSystem[i].velocity;
+        ngl::Vec3 velocity = massInSystem[i]->velocity;
         std::cout << "mass : " << i << " have a velocity value of: (" << velocity.m_x << "," << velocity.m_y << "," <<  velocity.m_z << ")\n";
         ngl::Vec3 massDrag = calcDragForce(velocity, drag);
         std::cout << "drag force of the mass : " << i << " is : " << "(" << massDrag.m_x << "," << massDrag.m_y << "," << massDrag.m_z << ")" << "\n"; 
@@ -324,9 +320,10 @@ void Cloth::evaluateForces()
 
 void Cloth::requestNewState(float t, float dt)
 {
+    float damper = 0.65f;
     for (int i=0; i<massInSystem.size() ; i++)
     {
-        Mass m1 = massInSystem[i];
+        Mass& m1 = *massInSystem[i];
         // create the states for any mass
         State intialState(m1.position, m1.velocity);
 
@@ -343,8 +340,14 @@ void Cloth::requestNewState(float t, float dt)
         ngl::Vec3 positionUpdateState =  updatedState.m_position;
         ngl::Vec3 velocityUpdateState =  updatedState.m_velocity;
 
-        m1.updateState(positionUpdateState, velocityUpdateState);
+        velocityUpdateState *= damper;
 
+        if (m1.isFixed == false)
+        {
+            m1.position = positionUpdateState;
+            m1.velocity = velocityUpdateState;
+
+        }
         // print the new state
         std::cout << "update state position: (" << positionUpdateState.m_x << "," << positionUpdateState.m_y << "," <<positionUpdateState.m_z << ")\n";
         std::cout << "update state velocity: (" << velocityUpdateState.m_x <<  "," << velocityUpdateState.m_y << "," <<velocityUpdateState.m_z << ")\n";

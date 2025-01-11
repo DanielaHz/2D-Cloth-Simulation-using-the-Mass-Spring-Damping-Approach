@@ -21,11 +21,11 @@ TEST(Cloth, createMass)
     c.createMass(width, height, spacing);
 
     // check the first mass
-    EXPECT_EQ(c.massInSystem[0].initPosition.m_x, initX);
-    EXPECT_EQ(c.massInSystem[0].initPosition.m_y, initY);
-    EXPECT_EQ(c.massInSystem[0].initPosition.m_z, posZ);
-    EXPECT_TRUE(c.massInSystem[0].isFixed);
-    GTEST_LOG_(INFO) << "Mass 1 position: " << c.massInSystem[0].initPosition.m_x << c.massInSystem[0].initPosition.m_y << c.massInSystem[0].initPosition.m_z << "\n";
+    EXPECT_EQ(c.massInSystem[0]->initPosition.m_x, initX);
+    EXPECT_EQ(c.massInSystem[0]->initPosition.m_y, initY);
+    EXPECT_EQ(c.massInSystem[0]->initPosition.m_z, posZ);
+    EXPECT_TRUE(c.massInSystem[0]->isFixed);
+    GTEST_LOG_(INFO) << "Mass 1 position: " << c.massInSystem[0]->initPosition.m_x << c.massInSystem[0]->initPosition.m_y << c.massInSystem[0]->initPosition.m_z << "\n";
 
     // check the 9 mass at the moment
     for (int i = 0; i < totalMass; ++i)
@@ -37,15 +37,15 @@ TEST(Cloth, createMass)
         float expectedX = initX + col * spacing;
         float expectedY = initY - row * spacing;
 
-        EXPECT_EQ(c.massInSystem[i].initPosition.m_x, expectedX);
-        EXPECT_EQ(c.massInSystem[i].initPosition.m_y, expectedY);
-        EXPECT_EQ(c.massInSystem[i].initPosition.m_z, posZ);
+        EXPECT_EQ(c.massInSystem[i]->initPosition.m_x, expectedX);
+        EXPECT_EQ(c.massInSystem[i]->initPosition.m_y, expectedY);
+        EXPECT_EQ(c.massInSystem[i]->initPosition.m_z, posZ);
 
         // show the positions
         GTEST_LOG_(INFO) << "Mass " << i + 1 << " position: "
-                         << "x = " << c.massInSystem[i].initPosition.m_x << ", "
-                         << "y = " << c.massInSystem[i].initPosition.m_y << ", "
-                         << "z = " << c.massInSystem[i].initPosition.m_z << "\n";
+                         << "x = " << c.massInSystem[i]->initPosition.m_x << ", "
+                         << "y = " << c.massInSystem[i]->initPosition.m_y << ", "
+                         << "z = " << c.massInSystem[i]->initPosition.m_z << "\n";
     }
 }
 
@@ -118,8 +118,8 @@ TEST(Cloth, calcGravityForce)
     Cloth c;
     ngl::Vec3 gravity = {0.0f, -9.8f, 0.0f};
     c.createMass(width, height, spacing);
-    ngl::Vec3 gForce = c.calcGravityForce(gravity, c.massInSystem[0].mass);
-    float m1Mass = c.massInSystem[0].mass;
+    ngl::Vec3 gForce = c.calcGravityForce(gravity, c.massInSystem[0]->mass);
+    float m1Mass = c.massInSystem[0]->mass;
     ngl::Vec3 gForceExpected = gravity * m1Mass;
 
     EXPECT_FLOAT_EQ(gForce.m_x, gForceExpected.m_x);
@@ -135,9 +135,9 @@ TEST (Cloth, calcDragForce)
     Cloth c;
     float drag = 0.05f;
     c.createMass(width, height, spacing);
-    ngl::Vec3 dForce = c.calcDragForce(c.massInSystem[0].velocity, drag);
+    ngl::Vec3 dForce = c.calcDragForce(c.massInSystem[0]->velocity, drag);
 
-    ngl::Vec3 velocity =  c.massInSystem[0].velocity;
+    ngl::Vec3 velocity =  c.massInSystem[0]->velocity;
     ngl::Vec3 dForceExpected = -1 * (velocity * drag);
 
     EXPECT_FLOAT_EQ(dForce.m_x, dForceExpected.m_x);
@@ -209,8 +209,8 @@ TEST(Cloth, evaluateForces)
 
     for (int i = 0; i < totalMass; ++i)
     {
-        c.massInSystem[i].mass = 1.0f; 
-        c.massInSystem[i].velocity = ngl::Vec3(0.0f, 0.0f, 0.0f); // Initial velocity
+        c.massInSystem[i]->mass = 1.0f; 
+        c.massInSystem[i]->velocity = ngl::Vec3(0.0f, 0.0f, 0.0f); // Initial velocity
     }
 
     c.evaluateForces();
