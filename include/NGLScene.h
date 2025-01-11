@@ -83,6 +83,7 @@ private:
     std::unique_ptr<Simulation> m_simulation; // temporarily created to visualize DrawCloth function
     ngl::Mat4 m_view;
     ngl::Mat4 m_project;
+    void timerEvent(QTimerEvent *) override;
 };
 
 

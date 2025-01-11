@@ -41,10 +41,21 @@ void NGLScene::initializeGL()
   // enable multisampling for smoother drawing
   glEnable(GL_MULTISAMPLE);
 
-  m_simulation = std::make_unique<Simulation>(100, 100, 30.0f); 
+  m_simulation = std::make_unique<Simulation>(600, 400, 30.0f); 
+  m_simulation->initialize();
 
   m_view = ngl::lookAt({620.0f, 360.0f, 1000.0f}, {620.0f, 360.0f, 0.0f}, {0, 1.0f, 0});
   ngl::ShaderLib::loadShader("Mass-SpringShader", "shaders/Mass-SpringVertex.glsl", "shaders/Mass-SpringFragment.glsl");
+  
+  startTimer(50);
+}
+
+
+void NGLScene::timerEvent(QTimerEvent *)
+{
+  float deltaTime = 0.05f;
+  m_simulation->update(deltaTime);
+  update();
 }
 
 
