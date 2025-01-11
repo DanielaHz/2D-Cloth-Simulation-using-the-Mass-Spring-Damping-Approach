@@ -19,7 +19,7 @@ public:
     int windowWidth = 1240;
     int windowHeight = 720;
 
-    std::vector<Mass> massInSystem;
+    std::vector<std::shared_ptr<Mass>> massInSystem;
     std::vector<Spring> springInSystem;
     std::map<int, std::vector<int>> uniqueConnections;
     std::map<int, std::vector<int>> allConnections; 
