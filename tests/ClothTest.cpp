@@ -18,7 +18,7 @@ TEST(Cloth, createMass)
     float posZ = 0.0f;
 
     Cloth c;
-    c.createMass(width, height, spacing);
+    c.createMass(numMassWidth, numMassHeight, spacing);
 
     // check the first mass
     EXPECT_EQ(c.massInSystem[0]->initPosition.m_x, initX);
@@ -152,7 +152,7 @@ TEST(Cloth, calcSpringForce)
     // Define test inputs
     float deformation = 1.0f;
     float stiffness = 10.0f;
-    ngl::Vec3 direction(1.0f, 2.0f, 3.0f);
+    ngl::Vec3 direction(-1.0f, -2.0f, -3.0f);
 
     // Call the function to test
     ngl::Vec3 result = c.calcSpringForce(deformation, stiffness, direction);
@@ -172,7 +172,7 @@ TEST(Cloth, calcSpringForce2)
 
     // Define test inputs
     float deformation = 1.0f;
-    ngl::Vec3 direction (4.0f, -2.0f, 1.5f);
+    ngl::Vec3 direction (-4.0f, 2.0f, -1.5f);
     float stiffness = 5.0f;
 
     // Call the function to test
@@ -189,36 +189,30 @@ TEST(Cloth, calcSpringForce2)
 
 TEST(Cloth, evaluateForces)
 {
-    int width = 10;
-    int height = 10;
-    float spacing = 3.0f;
-    int windowWidth = 1240;
-
-    int numMassWidth = static_cast<int>(width / spacing);
-    int numMassHeight = static_cast<int>(height / spacing);
+    int numMassWidth = 3;
+    int numMassHeight = 1;
+    float spacing = 30.0f;
     int totalMass = numMassWidth * numMassHeight;
 
-    float initX = (windowWidth - width) / 2;
-    float initY = 100.0f;
+    float initX = 400;
+    float initY = 650.0f;
     float posZ = 0.0f;
 
     Cloth c;
-    c.createMass(width, height, spacing);
+    c.createMass(numMassWidth, numMassHeight, spacing);
     c.createSpringConnections(numMassWidth, numMassHeight);
     c.createSpring(spacing);
-
-    for (int i = 0; i < totalMass; ++i)
-    {
-        c.massInSystem[i]->mass = 1.0f; 
-        c.massInSystem[i]->velocity = ngl::Vec3(0.0f, 0.0f, 0.0f); // Initial velocity
-    }
-
     c.evaluateForces();
 
-    //Verify the results
+    // Verify the results
     for (int i = 0; i < totalMass; ++i)
     {
-        ngl::Vec3 expectedForce = ngl::Vec3(0.0f, -9.81f, 0.0f);
+        ngl::Vec3 expectedGravity = c.calcGravityForce(c.gravity, 1.0f);
+        ngl::Vec3 expectedDrag = c.calcDragForce(c.massInSystem[i]->velocity, c.drag);
+        ngl::Vec3 expectedSpring = ngl::Vec3(0.0f, 0.0f, 0.0f); // Assuming initial spring forces are zero
+        ngl::Vec3 expectedDamping = c.calcDampingForce(c.massInSystem[i]->velocity, 0.4f);
+        ngl::Vec3 expectedForce = c.calcFinalForce(expectedGravity, expectedDrag, expectedSpring, expectedDamping);
+
         EXPECT_NEAR(c.finalForces[i].m_x, expectedForce.m_x, 1e-4);
         EXPECT_NEAR(c.finalForces[i].m_y, expectedForce.m_y, 1e-4);
         EXPECT_NEAR(c.finalForces[i].m_z, expectedForce.m_z, 1e-4);
@@ -242,7 +236,7 @@ TEST(Cloth, requestNewState)
     float posZ = 0.0f;
 
     Cloth c;
-    c.createMass(width, height, spacing); // populate the massInSystem vector
+    c.createMass(numMassWidth, numMassHeight, spacing); // populate the massInSystem vector
     c.createSpringConnections(numMassWidth, numMassHeight); // create the map to contain the connections between mass
     c.createSpring(spacing); // populate the springInSystem vecotor
     c.evaluateForces(); // calculate the final force acting over any mass

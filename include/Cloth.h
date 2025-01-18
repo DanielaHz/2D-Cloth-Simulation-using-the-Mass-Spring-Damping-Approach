@@ -25,10 +25,10 @@ public:
     std::map<int, std::vector<int>> allConnections; 
   
     ngl::Vec3 gravity = {0.0f, -9.81f, 0.0f};
-    float drag = 0.05f; // drag constant is a value between 0.01 to 0.5
+    float drag = 0.0f; // drag constant is a value between 0.01 to 0.5
     std::map<int, ngl::Vec3> finalForces; // contain the index of the mass and the final force value acting over the mass
    
-    void initCloth(int width, int height, float spacing); // setup the initial position of the particles  and the inital position of the springs
+    void initCloth(int numMassWidth, int numMassHeight, float spacing); // setup the initial position of the particles  and the inital position of the springs
     void createMass(int width, int height, float spacing); // Created to modularize the responsibility of initCloth
     void createSpringConnections(int numMassWidth, int numMassHeigth); // function created to identify the spring conecctions with the mass in the system( unique connections now)
     void printConnectionsMap();
@@ -42,7 +42,8 @@ public:
     ngl::Vec3 calcGravityForce(ngl::Vec3 gravity, float mass); 
     ngl::Vec3 calcDragForce(ngl::Vec3 velocity, float drag);
     ngl::Vec3 calcSpringForce(float distance, float stiffness, ngl::Vec3 direction);
-    ngl::Vec3 calcFinalForce(ngl::Vec3 gravity, ngl::Vec3 drag, ngl::Vec3 spring);
+    ngl::Vec3 calcDampingForce(ngl::Vec3 velocity, float damping);
+    ngl::Vec3 calcFinalForce(ngl::Vec3 gravity, ngl::Vec3 drag, ngl::Vec3 spring, ngl::Vec3 damping );
     void evaluateForces();// calculate forces , calculate final one and request new state and update new state
     void requestNewState(float t, float dt); //  give me the new state(position and velocity) per mass
 private: 
