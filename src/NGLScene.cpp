@@ -35,25 +35,25 @@ void NGLScene::initializeGL()
   // we must call that first before any other GL commands to load and link the
   // gl commands from the lib, if that is not done program will crash
   ngl::NGLInit::initialize();
-  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);			   // black Background or white?
+  glClearColor(0.051f, 0.067f ,0.089f, 1.0f);	// dark github background
   // enable depth testing for drawing
   glEnable(GL_DEPTH_TEST);
   // enable multisampling for smoother drawing
   glEnable(GL_MULTISAMPLE);
 
-  m_simulation = std::make_unique<Simulation>(600, 400, 30.0f); 
+  m_simulation = std::make_unique<Simulation>(15, 10, 40.0f); 
   m_simulation->initialize();
 
   m_view = ngl::lookAt({620.0f, 360.0f, 1000.0f}, {620.0f, 360.0f, 0.0f}, {0, 1.0f, 0});
   ngl::ShaderLib::loadShader("Mass-SpringShader", "shaders/Mass-SpringVertex.glsl", "shaders/Mass-SpringFragment.glsl");
   
-  startTimer(50);
+  startTimer(10);
 }
 
 
 void NGLScene::timerEvent(QTimerEvent *)
 {
-  float deltaTime = 0.05f;
+  float deltaTime = 0.01f;
   m_simulation->update(deltaTime);
   update();
 }
@@ -85,11 +85,13 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
       m_win.spinXFace=0;
       m_win.spinYFace=0;
       m_modelPos.set(ngl::Vec3::zero());
-
-  break;
+      update();
+      break;
+  // for debuggin purporse 
+  case Qt::Key_A: 
+      m_simulation->update(0.01f); 
+      update();
+      break;
   default : break;
   }
-  // finally update the GLWindow and re-draw
-
-    update();
 }
