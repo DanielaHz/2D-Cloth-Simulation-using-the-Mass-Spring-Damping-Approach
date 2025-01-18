@@ -80,7 +80,7 @@ private:
     WinParams m_win;
     /// position for our model
     ngl::Vec3 m_modelPos;
-    std::unique_ptr<Simulation> m_simulation; // temporarily created to visualize DrawCloth function
+    std::unique_ptr<Simulation> m_simulation;
     ngl::Mat4 m_view;
     ngl::Mat4 m_project;
     void timerEvent(QTimerEvent *) override;
