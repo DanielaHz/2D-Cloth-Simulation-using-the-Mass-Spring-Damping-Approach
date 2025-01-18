@@ -7,18 +7,16 @@ class Spring {
 public:
     float restLength = 0.0f;
     float currentLength = 0.0f;
-    float stiffness = 0.1f; // value between 0.0f - 1.0f
-    // This pointer are to track the position of the mass an identify how much the spring has elongated.
-    std::shared_ptr<Mass> mass1; //reference to mass1
-    std::shared_ptr<Mass> mass2; // reference to mass2.
+    float stiffness = 1.0f; 
+    std::shared_ptr<Mass> mass1; // reference to mass1
+    std::shared_ptr<Mass> mass2; // reference to mass2
 
     Spring() = default;
     Spring(float restLen, float currentLen, float stiffness, std::shared_ptr<Mass> m1, std::shared_ptr<Mass> m2);
-    Spring(float restLen, std::shared_ptr<Mass> m1, std::shared_ptr<Mass> m2);
+    Spring(float restLen, float stiff, std::shared_ptr<Mass> m1, std::shared_ptr<Mass> m2);
     ~Spring() = default;
 
     ngl::Vec3 getMassPosition(std::shared_ptr<Mass> m);
     float calculateCurrentLength(std::shared_ptr<Mass> m1, std::shared_ptr<Mass> m2);
-
 };
 #endif
