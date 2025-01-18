@@ -30,17 +30,17 @@ void Simulation::start()
     simulationLoop();
 }
 
-void Simulation::simulationLoop() {
-    while (true) {
-        auto currentTime = std::chrono::steady_clock::now();
-        std::chrono::duration<float> elapsedTime = currentTime - m_lastTime;
-        float deltaTime = elapsedTime.count();
+// void Simulation::simulationLoop() {
+//     while (true) {
+//         auto currentTime = std::chrono::steady_clock::now();
+//         std::chrono::duration<float> elapsedTime = currentTime - m_lastTime;
+//         float deltaTime = elapsedTime.count();
 
-        if (deltaTime >= 0.05f) 
-        {
-            update(0.05f);
-            render();
-            m_lastTime = currentTime;
-        }
-    }
-}
+//         if (deltaTime >= 0.01f) 
+//         {
+//             update(0.01f);
+//             render();
+//             m_lastTime = currentTime;
+//         }
+//     }
+// }
