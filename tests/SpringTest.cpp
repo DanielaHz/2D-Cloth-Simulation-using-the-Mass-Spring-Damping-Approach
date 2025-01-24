@@ -4,11 +4,11 @@
 TEST(Spring, DefaultConstructor)
 {
     Spring s;
-    EXPECT_FLOAT_EQ(s.restLength, 0.0f);
-    EXPECT_FLOAT_EQ(s.currentLength, 0.0f);
-    EXPECT_FLOAT_EQ(s.stiffness, 1.0f);
-    EXPECT_EQ(s.mass1, nullptr);
-    EXPECT_EQ(s.mass2, nullptr);
+    EXPECT_FLOAT_EQ(s.getRestLength(), 0.0f);
+    EXPECT_FLOAT_EQ(s.getCurrentLength(), 0.0f);
+    EXPECT_FLOAT_EQ(s.getStiffness(), 0.0f);
+    EXPECT_EQ(s.getMass1(), nullptr);
+    EXPECT_EQ(s.getMass2(), nullptr);
 }
 
 TEST(Spring, ParametrizedConstructor)
@@ -16,11 +16,11 @@ TEST(Spring, ParametrizedConstructor)
     std::shared_ptr<Mass> m1;
     std::shared_ptr<Mass> m2;
     Spring s(10.0f, 15.0f, 2.0f, m1, m2);
-    EXPECT_FLOAT_EQ(s.restLength, 10.0f);
-    EXPECT_FLOAT_EQ(s.currentLength, 15.0f);
-    EXPECT_FLOAT_EQ(s.stiffness, 2.0f);
-    EXPECT_EQ(s.mass1, m1);
-    EXPECT_EQ(s.mass2, m2);
+    EXPECT_FLOAT_EQ(s.getRestLength(), 10.0f);
+    EXPECT_FLOAT_EQ(s.getCurrentLength(), 15.0f);
+    EXPECT_FLOAT_EQ(s.getStiffness(), 2.0f);
+    EXPECT_EQ(s.getMass1(), m1);
+    EXPECT_EQ(s.getMass2(), m2);
 }
 
 TEST(Spring, getMassPosition)
