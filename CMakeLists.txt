@@ -9,14 +9,6 @@ cmake_minimum_required(VERSION 3.12)
 # Linux / Mac mkdir build; cd build; cmake -DCMAKE_PREFIX_PATH=~/NGL/ .. ; make
 #-------------------------------------------------------------------------------------------
 
-#-------------------------------------------------------------------------------------------
-# Windows compilation and linking - personal device
-# mkdir build; cd build; 
-# cmake -DNGL_DIR="C:\Users\ye-da\NGL" -DCMAKE_TOOLCHAIN_FILE="$HOME/Desktop/vcpkg/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH="C:\Qt\5.15.18\msvc2019_64" ..
-# cmake --build . 
-# cd debug; $env:Path += ";C:\Qt\5.15.18\msvc2019_64\bin"
-#-------------------------------------------------------------------------------------------
-
 # Initial configuration
 if(NOT DEFINED CMAKE_TOOLCHAIN_FILE AND DEFINED ENV{CMAKE_TOOLCHAIN_FILE})
    set(CMAKE_TOOLCHAIN_FILE $ENV{CMAKE_TOOLCHAIN_FILE})
@@ -67,7 +59,6 @@ target_sources(${TargetName} PRIVATE
             ${PROJECT_SOURCE_DIR}/include/TimeIntegrator.h        
         
 )
-
 target_link_libraries(${TargetName} PRIVATE Qt::Widgets Qt::OpenGL NGL)
 
 #-------------------------------------------------------------------------------------------
