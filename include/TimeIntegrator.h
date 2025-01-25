@@ -3,7 +3,8 @@
 
 #include <ngl/Vec3.h>
 
-// This class was took from the MassSpring DEMO available in NGL, and I adapted to the context of this project
+// This class was took from the NGL MassSpring DEMO available and I adapted to the context of this project.
+// link to the demo: https://github.com/NCCA/MassSpring.git
 // ------------------------------------------------------------------------------------------------------------
 
 class State
