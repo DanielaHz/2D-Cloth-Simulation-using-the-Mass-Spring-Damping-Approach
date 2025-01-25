@@ -1,5 +1,4 @@
 #include "Cloth.h"
-#include <iostream>
 
 void Cloth::initCloth(int numMassWidth, int numMassHeight, float spacing)
 {
@@ -21,7 +20,7 @@ void Cloth::initCloth(int numMassWidth, int numMassHeight, float spacing)
         return;
     }
 
-    // Initializing the VAO for mass
+    // Initializing the VAO for masses
     m_massVAO = ngl::VAOFactory::createVAO(ngl::simpleVAO, GL_POINTS);
     m_massVAO->bind();
     m_massVAO->setNumIndices(m_massInSystem.size());
@@ -41,7 +40,7 @@ void Cloth::createMass(int numMassWidth, int numMassHeight, float spacing)
     int width = numMassWidth*spacing;
     int totalMass = numMassWidth * numMassHeight;
     float initX = (m_windowWidth - width)/2;
-    float initY = 650.0f;
+    float initY = 700.0f;
     float initZ = 0.0f;
 
     for (int i = 0; i < totalMass; i++)
@@ -56,9 +55,9 @@ void Cloth::createMass(int numMassWidth, int numMassHeight, float spacing)
         // Creating the ngl::Vec3 position  
         ngl::Vec3 initPos = {x, y, z};
 
-        bool isFixed = (row == 0) && (col == 0 || col == numMassWidth - 1 || col == numMassWidth/2); // this is for fixded the first one and the last one in the grid
-        //bool isFixed = (row == 0) && (col == 0); //this is for fixed the firs one 
-
+        // This is for fixded the first one and the last one in the grid
+        bool isFixed = (row == 0) && (col == 0 || col == numMassWidth - 1 || col == numMassWidth/2);
+ 
         // creating the mass
         Mass m1(initPos, isFixed);
 
@@ -151,30 +150,41 @@ void Cloth::printAllConnections()
     }
 }
 
-void Cloth::createSpring(float spacing) {
-    for (auto e : m_uniqueConnections) {
+int Cloth::printTotalSpings()
+{
+    int totalSprings = 0;
+    for (auto e: m_uniqueConnections)
+    {
+        int springsbymass = e.second.size();
+        totalSprings += springsbymass;
+    }
+    std::cout << "the total of springs created are: "<< totalSprings << "\n";
+    return totalSprings;
+}
+
+void Cloth::createSpring(float spacing) 
+{
+    // Go over the uniqueConnections map and create the springs with the respective 
+    for (auto e : m_uniqueConnections) 
+    {
         auto mass1Index = e.first;
         auto mass1VecConnections = e.second;
-        for (auto mass2Index : mass1VecConnections) {
+
+        for (auto mass2Index : mass1VecConnections) 
+        {
             auto mass1 = m_massInSystem[mass1Index];
             auto mass2 = m_massInSystem[mass2Index];
 
-            float distance = std::round((mass1->getInitPosition() - mass2->getInitPosition()).length() * 10) / 10;
-
-            // std::cout << distance << "\n";
-            
-            float stiffness1 = 8.0f; 
-            float stiffness2 = 0.0f;
-            float stiffness3 = 0.0f;
+            float distance = (mass1->getInitPosition() - mass2->getInitPosition()).length();
 
             if (distance == spacing) {
-                Spring s(distance, stiffness1, mass1, mass2);
+                Spring s(distance, m_structuralStiffness, mass1, mass2); // Structural springs have the same length that the spacing between masses
                 m_springInSystem.push_back(s);   
-            } else if (distance > spacing && distance < spacing * 2) {
-                Spring s(distance, stiffness2, mass1, mass2);
+            } else if (distance > spacing && distance < spacing * 2) { 
+                Spring s(distance, m_shearStiffness, mass1, mass2);      // Shear springs represents diagonal conenctions which are a little bit bigger that the strucutral applyin pitagoras theorem
                 m_springInSystem.push_back(s);
             } else if (distance == spacing *2 ) {
-                Spring s(distance, stiffness3, mass1, mass2);
+                Spring s(distance, m_bendStiffness, mass1, mass2);      // bend springs are the doble lenght of the structural
                 m_springInSystem.push_back(s);
             }
         }
@@ -198,7 +208,7 @@ void Cloth::drawMass()
         vertexData.push_back(mass->getPosition().m_z);
     }
 
-    glPointSize(m_massInSystem[0]->getSize());
+    glPointSize(m_massInSystem[0]->getSize()); // set the size of the point mass
     m_massVAO->bind();
     m_massVAO->setData(ngl::AbstractVAO::VertexData(vertexData.size() * sizeof(GLfloat), vertexData[0]));
     m_massVAO->setVertexAttributePointer(0, 3, GL_FLOAT, sizeof(GLfloat) * 3, 0);
@@ -209,6 +219,7 @@ void Cloth::drawMass()
 
 void Cloth::drawSpring()
 {
+    // transform the data of position in springsInSystem to a GLfloat vector
     std::vector<GLfloat> vertexData;
     for (auto &Spring : m_springInSystem)
     {
@@ -229,8 +240,7 @@ void Cloth::drawSpring()
     m_springVAO->unbind();
 }
 
-ngl::Vec3 Cloth::calcGravityForce(ngl::Vec3 m_gravity, float mass)
-{
+ngl::Vec3 Cloth::calcGravityForce(ngl::Vec3 m_gravity, float mass) {
     return mass * m_gravity;
 }
 
@@ -256,7 +266,7 @@ ngl::Vec3 Cloth::calcFinalForce(ngl::Vec3 gravity, ngl::Vec3 drag, ngl::Vec3 spr
 
 void Cloth::evaluateForces()
 {
-    std::map<int, ngl::Vec3> trackSpringForces;
+    std::map<int, ngl::Vec3> trackSpringForces; // provitional map
 
     for (size_t i = 0 ; i < m_massInSystem.size(); i++)
     {
@@ -268,7 +278,7 @@ void Cloth::evaluateForces()
         ngl::Vec3 velocity = m_massInSystem[i]->getVelocity();
         ngl::Vec3 massDrag = calcDragForce(velocity, m_drag);
 
-        // Calculate the spring force 
+        // Calculate the spring forces
         int springsOveri = m_uniqueConnections[i].size();
         for (int l = 0 ; l < springsOveri; l++)
         {
@@ -278,30 +288,28 @@ void Cloth::evaluateForces()
             float distance = direction.length();
             float deformation =  distance - s1.getRestLength();
             direction.normalize();
-            ngl::Vec3 force = calcSpringForce(deformation, s1.getStiffness() , direction);
+            ngl::Vec3 force = calcSpringForce(deformation, s1.getStiffness(), direction);
 
-            // Adding the force accting over the mass i 
+            // Adding the force accting over the mass i and the other connected in the spring
             trackSpringForces[i] += force;
             trackSpringForces[indexMass2] -= force;  
         }
 
-        ngl::Vec3 massSpring = trackSpringForces[i];
+        ngl::Vec3 massSpring = trackSpringForces[i]; // the the total value of the spring forces over the mass i
 
-        // Calculating damping force 
-        float damping = 0.5f;
-        ngl::Vec3 massDamping = calcDampingForce(velocity, damping);
+        // Calculate the damping force
+        ngl::Vec3 massDamping = calcDampingForce(velocity, m_damping);
 
-        // Calculate the final force in the system
+        // Calculate the final force over the mass i
         ngl::Vec3 finalForce = calcFinalForce(massGravity, massDrag, massSpring, massDamping);
 
-        // Final force acting over the mass
+        // Final force acting over the mass i
         m_finalForces[i] = finalForce;
     }
 }
 
 void Cloth::requestNewState(float t, float dt)
 {
-
     for (int i=0; i<m_massInSystem.size() ; i++)
     {
         Mass& m1 = *m_massInSystem[i];
@@ -357,16 +365,3 @@ ngl::Vec3 Cloth::getGravity() {return m_gravity;}
 //         }
 //     }
 // }
-
-
-int Cloth::printTotalSpings()
-{
-    int totalSprings = 0;
-    for (auto e: m_uniqueConnections)
-    {
-        int springsbymass = e.second.size();
-        totalSprings += springsbymass;
-    }
-    std::cout << "the total of structural spring created are: "<< totalSprings << "\n";
-    return totalSprings;
-}
