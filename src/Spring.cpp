@@ -6,6 +6,20 @@ Spring::Spring(float restLen, float currentLen, float stiffness, std::shared_ptr
 Spring::Spring(float restLen, float stiff, std::shared_ptr<Mass> m1, std::shared_ptr<Mass> m2)
     : m_restLength{restLen}, m_stiffness{stiff}, m_mass1{m1}, m_mass2{m2} {}
 
+float Spring::getRestLength() {return m_restLength;}
+
+float Spring::getCurrentLength() {return m_currentLength;}
+
+float Spring::getStiffness() {return m_stiffness;}
+
+std::shared_ptr<Mass> Spring::getMass1() {return m_mass1;}
+
+std::shared_ptr<Mass> Spring::getMass2() {return m_mass2;}
+
+void Spring::setStiffness (const float &stiff) {m_stiffness = stiff;}
+
+void Spring::setRestLength (const float &len) {m_restLength = len;}
+
 ngl::Vec3 Spring::getMassPosition(std::shared_ptr<Mass> m)
 {
     float x = m->getPosition().m_x;
@@ -23,17 +37,3 @@ float Spring::calculateCurrentLength( std::shared_ptr<Mass> m1, std::shared_ptr<
 
     return dis.length();
 }
-
-float Spring::getRestLength() {return m_restLength;}
-
-float Spring::getCurrentLength() {return m_currentLength;}
-
-float Spring::getStiffness() {return m_stiffness;}
-
-std::shared_ptr<Mass> Spring::getMass1() {return m_mass1;}
-
-std::shared_ptr<Mass> Spring::getMass2() {return m_mass2;}
-
-void Spring::setStiffness (const float &stiff) {m_stiffness = stiff;}
-
-void Spring::setRestLength (const float &len) {m_restLength = len;}
