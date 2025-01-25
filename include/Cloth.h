@@ -32,6 +32,7 @@ class Cloth {
         ngl::Vec3 calcFinalForce(ngl::Vec3 gravity, ngl::Vec3 drag, ngl::Vec3 spring, ngl::Vec3 damping);
         void evaluateForces();// calculate forces , calculate final one and request new state and update new state
         void requestNewState(float t, float dt); //  give me the new state(position and velocity) per mass
+        int printTotalSpings();
         // ngl::Vec3 applyLeftClickForce(float forceRadius, float forceMaginitude);
 
         // get created to access from the cloth unit test
@@ -46,7 +47,7 @@ class Cloth {
     private: 
         int m_windowWidth = 1240;
         ngl::Vec3 m_gravity = {0.0f, -9.80f, 0.0f};
-        float m_drag = 0.0f; // drag constant is a value between 0.01 to 0.5
+        float m_drag = 0.1f; // drag constant is a value between 0.01 to 0.5
         std::vector<std::shared_ptr<Mass>> m_massInSystem;
         std::vector<Spring> m_springInSystem;
         std::map<int, std::vector<int>> m_uniqueConnections;

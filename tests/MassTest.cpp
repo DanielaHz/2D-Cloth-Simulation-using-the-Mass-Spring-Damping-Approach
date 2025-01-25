@@ -5,13 +5,14 @@ TEST(Mass, DefaultConstructor)
 {
     Mass m;
     EXPECT_FLOAT_EQ(m.getMass(), 1.0f);  
-    EXPECT_FLOAT_EQ(m.getSize(), 5.0f);
+    EXPECT_FLOAT_EQ(m.getSize(), 7.0f);
     EXPECT_FALSE(m.getIsFixed());
 }
 
 TEST(Mass, ParametrizedConstructor)
 {
-    ngl::Vec3 initPos{1.0f, 2.0f, 0.0f}; // Remember is a 2D animation so z = 0.0f
+    // test values mass 1
+    ngl::Vec3 initPos{1.0f, 2.0f, 0.0f};
     ngl::Vec3 initVel{0.1f, 0.2f, 0.0f};
     ngl::Vec3 pos = initPos;
     ngl::Vec3 vel = initVel;
@@ -19,6 +20,7 @@ TEST(Mass, ParametrizedConstructor)
     float size = 10.0f;
     bool isFixed = true;
 
+    // creating the mass 1 to test
     Mass m(initPos, initVel, pos, vel, mass, size, isFixed);
 
     EXPECT_EQ(m.getInitPosition(), initPos);
@@ -30,14 +32,18 @@ TEST(Mass, ParametrizedConstructor)
     EXPECT_TRUE(m.getIsFixed());
 
     //////////////////////////////////////////////////////
+
+    // test values mass 2
     ngl::Vec3 initPosition = {5.0f, 0.0f, 0.0f};
     ngl::Vec3 initVelocity = {0.0f, 0.0f, 0.0f};
     ngl::Vec3 position = initPosition;
     ngl::Vec3 velocity = initVelocity;
     float mass2 = 1.0f; 
-    float size2 = 5.0f;
+    float size2 = 7.0f;
 
+    // creating the mass 2 to test
     Mass m2(ngl::Vec3 {5.0f, 0.0f, 0.0f}, isFixed = true);
+
     EXPECT_EQ(m2.getInitPosition(), initPosition);
     EXPECT_EQ(m2.getInitVelocity(), initVelocity);
     EXPECT_EQ(m2.getPosition(), position);
@@ -52,7 +58,6 @@ TEST(Mass, updateState)
     // Initial state of the mass m
     Mass m (ngl::Vec3 {4.0f, 5.0f, 0.0f}, ngl::Vec3 {0.0f, 0.0f, 0.0f}, ngl::Vec3 {0.0f, 0.0f, 0.0f}, ngl::Vec3 {0.0f, 0.0f, 0.0f}, 1.0f, 1.0f, false); 
 
-    // Values should calculate for the RK4 - default values for now.
     ngl::Vec3 newPosition{4.0f, 10.0f, 0.0f};
     ngl::Vec3 newVelocity{0.0f, 0.6f, 0.0f};
 
@@ -64,7 +69,7 @@ TEST(Mass, updateState)
 
 TEST(Mass, resetState)
 {
-    // Should reset position and velocity to {0.0f, 0.0f, 0.0f}
+    // Initial state of the mass m
     Mass m (ngl::Vec3 {4.0f, 5.0f, 0.0f}, ngl::Vec3 {0.0f, 0.0f, 0.0f}, ngl::Vec3 {5.0f, 7.0f, 0.0f}, ngl::Vec3 {1.0f, 3.0f, 0.0f}, 1.0f, 1.0f, false); 
 
     m.resetState(); // Reset the state

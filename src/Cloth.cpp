@@ -1,4 +1,5 @@
 #include "Cloth.h"
+#include <iostream>
 
 void Cloth::initCloth(int numMassWidth, int numMassHeight, float spacing)
 {
@@ -119,6 +120,7 @@ void Cloth::createSpringConnections(int numMassWidth, int numMassHeight)
             m_uniqueConnections[currentIndex] = neighbors;
         }
     }
+    printTotalSpings();
 }
 
 void Cloth::printConnectionsMap()
@@ -286,7 +288,7 @@ void Cloth::evaluateForces()
         ngl::Vec3 massSpring = trackSpringForces[i];
 
         // Calculating damping force 
-        float damping = 0.6f;
+        float damping = 0.5f;
         ngl::Vec3 massDamping = calcDampingForce(velocity, damping);
 
         // Calculate the final force in the system
@@ -355,3 +357,16 @@ ngl::Vec3 Cloth::getGravity() {return m_gravity;}
 //         }
 //     }
 // }
+
+
+int Cloth::printTotalSpings()
+{
+    int totalSprings = 0;
+    for (auto e: m_uniqueConnections)
+    {
+        int springsbymass = e.second.size();
+        totalSprings += springsbymass;
+    }
+    std::cout << "the total of structural spring created are: "<< totalSprings << "\n";
+    return totalSprings;
+}
