@@ -6,18 +6,6 @@ Mass::Mass(ngl::Vec3 initPos, ngl::Vec3 initVel, ngl::Vec3 pos, ngl::Vec3 vel, f
 Mass::Mass(ngl::Vec3 initPos, bool isFix)
     : m_initPosition{initPos}, m_isFixed{isFix} {};
 
-void Mass::updateState(ngl::Vec3 newPos, ngl::Vec3 newVel)
-{
-    m_position.set(newPos);
-    m_velocity.set(newVel);
-}
-
-void Mass::resetState()
-{
-    m_position.set({0.0f, 0.0f,0.0f});
-    m_velocity.set({0.0f, 0.0f, 0.0f});
-}
-
 ngl::Vec3 Mass::getPosition() {return m_position;}
 
 ngl::Vec3 Mass::getVelocity() {return m_velocity;}
@@ -37,3 +25,15 @@ void Mass::setPosition(const ngl::Vec3 &pos) {m_position = pos;}
 void Mass::setVelocity(const ngl::Vec3 &vel) {m_velocity = vel;}
 
 void Mass::setMass(const float &mass) {m_mass = mass;}
+
+void Mass::updateState(ngl::Vec3 newPos, ngl::Vec3 newVel)
+{
+    m_position.set(newPos);
+    m_velocity.set(newVel);
+}
+
+void Mass::resetState()
+{
+    m_position.set({0.0f, 0.0f,0.0f});
+    m_velocity.set({0.0f, 0.0f, 0.0f});
+}
