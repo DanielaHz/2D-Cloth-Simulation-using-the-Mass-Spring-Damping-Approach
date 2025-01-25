@@ -69,5 +69,5 @@ Ensure that NGL is installed on your computer. You can find the installation ins
 
 ## UML Diagram
 
-![UML-diagram](images/UML_Final_Design.jpg)
+![UML-diagram](images/UML_Final.jpg)
 
