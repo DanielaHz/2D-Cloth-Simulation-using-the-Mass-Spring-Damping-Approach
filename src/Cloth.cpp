@@ -65,52 +65,63 @@ void Cloth::createMass(int numMassWidth, int numMassHeight, float spacing)
     }
 }
 
-void Cloth::createSpringConnections(int numMassWidth, int numMassHeight)
-{
+void Cloth::createSpringConnections(int numMassWidth, int numMassHeight) {
     std::set<std::pair<int, int>> uniqueCon;  // set to track unique connections
 
-    for (int i = 0; i < numMassHeight; ++i) 
-    {
-        for (int j = 0; j < numMassWidth; ++j) 
-        {
-            std::vector<int> neighbors; 
+    for (int i = 0; i < numMassHeight; ++i) {
+        for (int j = 0; j < numMassWidth; ++j) {
+            std::vector<int> neighbors;
             int currentIndex = i * numMassWidth + j;
 
-            std::vector<std::pair<int, int>> potentialNeighbors = {
-                {i + 1, j},     // above
-                {i - 1, j},     // below
-                {i, j + 1},     // right
-                {i, j - 1},     // left
-                // {i + 1, j + 1}, // Diagonal above-right
-                // {i + 1, j - 1}, // Diagonal above-left
-                // {i - 1, j + 1}, // Diagonal below-right
-                // {i - 1, j - 1} // Diagonal below-left
-                // {i + 2, j},     // above
-                // {i - 2, j},     // below
-                // {i, j + 2},     // right
-                // {i, j - 2},     // left
-            };
+            std::vector<std::pair<int, int>> potentialNeighbors;
 
-            for (const auto& neighbor : potentialNeighbors) 
-            {
+            if (m_enableStructuralSprings) {
+                std::vector<std::pair<int, int>> structuralNeighbors = {
+                    {i + 1, j},     // above
+                    {i - 1, j},     // below
+                    {i, j + 1},     // right
+                    {i, j - 1}      // left
+                };
+                potentialNeighbors.insert(potentialNeighbors.end(), structuralNeighbors.begin(), structuralNeighbors.end());
+            }
+
+            if (m_enableShearSprings) {
+                std::vector<std::pair<int, int>> shearNeighbors = {
+                    {i + 1, j + 1}, // Diagonal above-right
+                    {i + 1, j - 1}, // Diagonal above-left
+                    {i - 1, j + 1}, // Diagonal below-right
+                    {i - 1, j - 1}  // Diagonal below-left
+                };
+                potentialNeighbors.insert(potentialNeighbors.end(), shearNeighbors.begin(), shearNeighbors.end());
+            }
+
+            if (m_enableBendSprings) {
+                std::vector<std::pair<int, int>> bendNeighbors = {
+                    {i + 2, j},     // above bend
+                    {i - 2, j},     // below bend 
+                    {i, j + 2},     // right bend 
+                    {i, j - 2}      // left bend
+                };
+                potentialNeighbors.insert(potentialNeighbors.end(), bendNeighbors.begin(), bendNeighbors.end());
+            }
+
+            for (const auto& neighbor : potentialNeighbors) {
                 int ni = neighbor.first;
                 int nj = neighbor.second;
 
-                // Validate if the potencial neighbor exist
-                if (ni >= 0 && ni < numMassHeight && nj >= 0 && nj < numMassWidth) 
-                {
+                // Validate if the potential neighbor exists
+                if (ni >= 0 && ni < numMassHeight && nj >= 0 && nj < numMassWidth) {
                     int neighborIndex = ni * numMassWidth + nj; // calculate the index of the neighbor
 
-                    // Make the connection using in the index
+                    // Make the connection using the index
                     std::pair<int, int> connection = std::make_pair(currentIndex, neighborIndex);
                     std::pair<int, int> reverseConnection = std::make_pair(neighborIndex, currentIndex);
 
                     m_allConnections[currentIndex].push_back(neighborIndex);
 
-                    // add the conecction if it doesnt track it
-                    if (uniqueCon.find(connection) == uniqueCon.end() && 
-                        uniqueCon.find(reverseConnection) == uniqueCon.end()) 
-                    {
+                    // Add the connection if it doesn't track it
+                    if (uniqueCon.find(connection) == uniqueCon.end() &&
+                        uniqueCon.find(reverseConnection) == uniqueCon.end()) {
                         uniqueCon.insert(connection);
                         neighbors.push_back(neighborIndex);
                     }
@@ -119,7 +130,6 @@ void Cloth::createSpringConnections(int numMassWidth, int numMassHeight)
             m_uniqueConnections[currentIndex] = neighbors;
         }
     }
-    printTotalSpings();
 }
 
 void Cloth::printConnectionsMap()
@@ -351,17 +361,39 @@ float Cloth::getDrag() {return m_drag;}
 
 ngl::Vec3 Cloth::getGravity() {return m_gravity;}
 
-// void Cloth::applyLeftClickForce(const ngl::Vec2 &clickPosition, float forceRadius, float forceMagnitude)
-// {
-//     for (size_t i = 0; i < m_massInSystem.size(); ++i)
-//     {
-//         ngl::Vec2 massPosition = m_massInSystem[i]->getPosition();
-//         float distance = (massPosition - clickPosition).length();
+void Cloth::setGravity(ngl::Vec3 gravity) {m_gravity = gravity;}
 
-//         if (distance <= forceRadius)
-//         {
-//             ngl::Vec3 force(0.0f, 0.0f, forceMagnitude);
-//             m_finalForces[i] += force;
-//         }
-//     }
-// }
+void Cloth::setDrag(float drag) {m_drag = drag;}
+
+void Cloth::setDamping(float damping) {m_damping = damping;}
+
+void Cloth::setStructuralStiffness(float stiffness1) { m_structuralStiffness = stiffness1;}
+
+void Cloth::setShearStiffness(float stiffness2) {m_shearStiffness = stiffness2;}
+
+void Cloth::setBendStiffness(float stiffness3) {m_bendStiffness = stiffness3;}
+
+void Cloth::setEnableStructuralSprings() {m_enableStructuralSprings = true;}
+
+void Cloth::setEnableShearSprings() {m_enableShearSprings = true;}
+
+void Cloth::setEnableBendSprings() {m_enableBendSprings = true;}
+
+void Cloth::applyLeftClickForce(ngl::Vec3 nglClickPosition)
+{
+    float forceRadius = 150.0f;
+    float moveAmount = 20.0f;  
+
+    for (size_t i = 0; i < m_massInSystem.size(); ++i)
+    {
+        ngl::Vec3 massPosition = m_massInSystem[i]->getPosition();
+        float distance = (massPosition - nglClickPosition).length();
+
+        if (distance <= forceRadius)
+        {
+            ngl::Vec3 direction = (massPosition - nglClickPosition);
+            direction.normalize();
+            m_massInSystem[i]->setPosition(massPosition + direction * moveAmount);
+        }
+    }
+}

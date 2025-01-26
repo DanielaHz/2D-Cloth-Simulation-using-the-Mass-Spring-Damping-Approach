@@ -11,7 +11,7 @@ TEST(Cloth, createMass)
     int width = numMassWidth*spacing;
     int totalMass = numMassWidth * numMassHeight;
     float initX = (windowWidth - width) / 2;
-    float initY = 650.0f;
+    float initY = 700.0f;
     float posZ = 0.0f;
 
     Cloth c;
@@ -50,11 +50,11 @@ TEST(Cloth, createSpringConnectionsTestOneMass3X3Grid) {
     Cloth c;
     int numMassWidth = 3;
     int numMassHeight = 3;
-
+    c.setEnableStructuralSprings();
     c.createSpringConnections(numMassWidth, numMassHeight);
 
     int mass0 = 0;
-    std::vector<int> expectedNeighbors = {3,1}; // Unique connections taking into count just structural springs!!
+    std::vector<int> expectedNeighbors = {3,1}; // Unique connections taking into count just the enable structural springs!!
 
     // Search for the mass connections
     ASSERT_TRUE(c.getUniqueConnections().find(mass0) != c.getUniqueConnections().end()) << "mass not found!";

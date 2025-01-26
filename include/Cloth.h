@@ -42,9 +42,8 @@ class Cloth {
         ngl::Vec3 calcFinalForce(ngl::Vec3 gravity, ngl::Vec3 drag, ngl::Vec3 spring, ngl::Vec3 damping); // Calculate the final force from various forces
         void evaluateForces();// Calculate and update the final force acting on each mass in the system
 
-        // Interactive Forces methods
-        // ngl::Vec3 applyLeftClickForce(float forceRadius, float forceMaginitude); // this force its applyied in the z position when the user put left click 
-        // ngl:Vec3 applyRightClickForce // this force find the nearest point where the point the user click and pull the point to that position 
+        // Interactive methods
+        void applyLeftClickForce(ngl::Vec3 nglClickPosition); // Create a wave effect over the cloth simulation
 
         // Integration methods
         void requestNewState(float t, float dt); // Update the state (position and velocity) of each mass based on the current time and time step 
@@ -58,15 +57,29 @@ class Cloth {
         float getDrag();
         ngl::Vec3 getGravity();
 
+        // Setter methods (Creted to initialize the forces constants)
+        void setGravity(ngl::Vec3 gravity);
+        void setDrag(float drag);
+        void setDamping(float damping);
+        void setStructuralStiffness(float stiffness1);
+        void setShearStiffness(float stiffness2);
+        void setBendStiffness(float stiffness3);
+        void setEnableStructuralSprings();
+        void setEnableShearSprings();
+        void setEnableBendSprings();
+
     private: 
         // Attributes
         int m_windowWidth = 1240;                               // Window width useful to position the first mass point row
-        ngl::Vec3 m_gravity = {0.0f, -9.80f, 0.0f};             // Gravity constant
-        float m_drag = 0.1f;                                    // Drag constant (usually has a value between 0.01 to 0.5)
-        float m_damping = 0.5f;                                 // Dampign constant (usually has a value between 0.1 to 1.0)
-        float m_structuralStiffness = 8.0f;                     // Stiffness constant for structural springs
-        float m_shearStiffness = 0.0f;                          // Stiffness constant for shear springs
-        float m_bendStiffness = 0.0f;                           // Stiffness constant for bend springs
+        ngl::Vec3 m_gravity;                                    // Gravity constant
+        float m_drag;                                           // Drag constant (usually has a value between 0.01 to 0.5)
+        float m_damping;                                        // Dampign constant (usually has a value between 0.1 to 1.0)
+        float m_structuralStiffness;                            // Stiffness constant for structural springs
+        float m_shearStiffness;                                 // Stiffness constant for shear springs
+        float m_bendStiffness;                                  // Stiffness constant for bend springs
+        bool m_enableStructuralSprings = false;                 // Unable structural spirngs by defult
+        bool m_enableShearSprings = false;                      // Unable shear springs by default
+        bool m_enableBendSprings = false;                       // Unable bend springs by default
         std::vector<std::shared_ptr<Mass>> m_massInSystem;      // Vector that contains all the masses in the system. Masses are positioned from right to left and top to bottom 
         std::vector<Spring> m_springInSystem;                   // Vector that contains all the springs in the system. This vector follows the connections provided by the uniqueConnections map
         std::map<int, std::vector<int>> m_uniqueConnections;    // Map that contains the unique connections of masses in the system, depending on the type of spring that connects the respective masses. The key represents the index of the masses, and the value is a vector with the indices of the connected masses. It is unique because it checks if the connection 1-2 exists; when at 2-1, it does not need to be created
