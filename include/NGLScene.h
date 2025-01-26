@@ -1,6 +1,7 @@
 #ifndef NGLSCENE_H_
 #define NGLSCENE_H_
 #include <ngl/Vec3.h>
+#include <ngl/Vec2.h>
 #include "Simulation.h"
 #include <ngl/Transformation.h>
 #include "WindowParams.h"
@@ -80,12 +81,9 @@ private:
     WinParams m_win;
     /// position for our model
     ngl::Vec3 m_modelPos;
-    std::unique_ptr<Simulation> m_simulation;
-    ngl::Mat4 m_view;
+    std::unique_ptr<Simulation> m_simulation; // pointer to simulation class
+    ngl::Mat4 m_view; 
     ngl::Mat4 m_project;
     void timerEvent(QTimerEvent *) override;
 };
-
-
-
 #endif

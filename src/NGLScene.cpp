@@ -1,6 +1,5 @@
 #include <QMouseEvent>
 #include <QGuiApplication>
-
 #include "NGLScene.h"
 #include <ngl/NGLInit.h>
 #include <ngl/VAOPrimitives.h>
@@ -14,13 +13,10 @@ NGLScene::NGLScene()
   setTitle("2D Cloth Simulation");
 }
 
-
 NGLScene::~NGLScene()
 {
   std::cout<<"Shutting down NGL, removing VAO's and Shaders\n";
 }
-
-
 
 void NGLScene::resizeGL(int _w , int _h)
 {
@@ -28,7 +24,6 @@ void NGLScene::resizeGL(int _w , int _h)
   m_win.height = static_cast<int>( _h * devicePixelRatio() );
   m_project = ngl::perspective(45.0f, float(_w) / float(_h), 0.01f, 2000.0f);
 }
-
 
 void NGLScene::initializeGL()
 {
@@ -41,7 +36,7 @@ void NGLScene::initializeGL()
   // enable multisampling for smoother drawing
   glEnable(GL_MULTISAMPLE);
 
-  m_simulation = std::make_unique<Simulation>(15, 10, 40.0f); 
+  m_simulation = std::make_unique<Simulation>(15, 11, 50.0f); 
   m_simulation->initialize();
 
   m_view = ngl::lookAt({620.0f, 360.0f, 1000.0f}, {620.0f, 360.0f, 0.0f}, {0, 1.0f, 0});
@@ -50,14 +45,12 @@ void NGLScene::initializeGL()
   startTimer(10);
 }
 
-
 void NGLScene::timerEvent(QTimerEvent *)
 {
-  float deltaTime = 0.01f;
+  float deltaTime = 0.01;
   m_simulation->update(deltaTime);
   update();
 }
-
 
 void NGLScene::paintGL()
 {
@@ -70,8 +63,6 @@ void NGLScene::paintGL()
 
   m_simulation->render();
 }
-
-//----------------------------------------------------------------------------------------------------------------------
 
 void NGLScene::keyPressEvent(QKeyEvent *_event)
 {
