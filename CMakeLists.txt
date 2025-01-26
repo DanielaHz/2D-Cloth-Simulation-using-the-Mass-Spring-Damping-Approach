@@ -44,8 +44,8 @@ include_directories(include $ENV{HOME}/NGL/include)
 
 target_sources(${TargetName} PRIVATE 
             ${PROJECT_SOURCE_DIR}/src/main.cpp  
-			${PROJECT_SOURCE_DIR}/src/NGLScene.cpp  
-			${PROJECT_SOURCE_DIR}/src/NGLSceneMouseControls.cpp
+			${PROJECT_SOURCE_DIR}/src/NGLScene.cpp
+            ${PROJECT_SOURCE_DIR}/src/NGLSceneMouseControls.cpp
             ${PROJECT_SOURCE_DIR}/src/Mass.cpp
             ${PROJECT_SOURCE_DIR}/src/Spring.cpp
             ${PROJECT_SOURCE_DIR}/src/Cloth.cpp
