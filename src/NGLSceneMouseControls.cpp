@@ -1,6 +1,7 @@
 #include "NGLScene.h"
 #include <QMouseEvent>
 #include <QtGlobal>
+
 //----------------------------------------------------------------------------------------------------------------------
 void NGLScene::mouseMoveEvent(QMouseEvent *_event)
 {
@@ -35,6 +36,11 @@ void NGLScene::mouseMoveEvent(QMouseEvent *_event)
   }
 }
 
+ngl::Vec3 windowToSimulationCoordinates(QPointF clickPosition)
+{
+  return {static_cast<float>(clickPosition.x()), static_cast<float>(clickPosition.y()), 0.0f};
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 void NGLScene::mousePressEvent(QMouseEvent *_event)
 {
@@ -48,16 +54,9 @@ void NGLScene::mousePressEvent(QMouseEvent *_event)
 
   if (_event->button() == Qt::LeftButton)
   {
-    m_win.origX = position.x();
-    m_win.origY = position.y();
-    m_win.rotate = true;
-  }
-  // right mouse translate mode
-  else if (_event->button() == Qt::RightButton)
-  {
-    m_win.origXPos = position.x();
-    m_win.origYPos = position.y();
-    m_win.translate = true;
+    ngl::Vec3 nglClickPosition = windowToSimulationCoordinates(position);
+    m_simulation->applyLeftClick(nglClickPosition);
+    qDebug() << "Left click force applied";
   }
 }
 
