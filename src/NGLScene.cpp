@@ -36,8 +36,8 @@ void NGLScene::initializeGL()
   // enable multisampling for smoother drawing
   glEnable(GL_MULTISAMPLE);
 
-  // Parameters to initialize the default simulation 
-  int numberMassWidth = 15;
+  // Set parameters to initialize the cloth 
+  int numberMassWidth = 15; 
   int numberMassHeight = 11;
   float spacing = 50.0f; 
 
@@ -52,6 +52,7 @@ void NGLScene::initializeGL()
 
 void NGLScene::timerEvent(QTimerEvent *)
 {
+  // set the delta time here !!
   float deltaTime = 0.01;
   m_simulation->update(deltaTime);
   update();
