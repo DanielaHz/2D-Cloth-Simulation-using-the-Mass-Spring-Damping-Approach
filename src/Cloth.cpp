@@ -55,7 +55,7 @@ void Cloth::createMass(int numMassWidth, int numMassHeight, float spacing)
         // Creating the ngl::Vec3 position  
         ngl::Vec3 initPos = {x, y, z};
 
-        // This is for fixded the first one and the last one in the grid
+        // This is for fixded the first one, the middle and the last point maiss in the first row of the clothe
         bool isFixed = (row == 0) && (col == 0 || col == numMassWidth - 1 || col == numMassWidth/2);
  
         // creating the mass
@@ -65,6 +65,9 @@ void Cloth::createMass(int numMassWidth, int numMassHeight, float spacing)
     }
 }
 
+// Function modified using the next promt
+// prompt: How I can make modular the next function to enable the creation of different springs as potencialNeighbors?
+// copilot suggest the following
 void Cloth::createSpringConnections(int numMassWidth, int numMassHeight) {
     std::set<std::pair<int, int>> uniqueCon;  // set to track unique connections
 
@@ -105,6 +108,7 @@ void Cloth::createSpringConnections(int numMassWidth, int numMassHeight) {
                 potentialNeighbors.insert(potentialNeighbors.end(), bendNeighbors.begin(), bendNeighbors.end());
             }
 
+            // Note: I use copilot to develop the next code to find unique conections
             for (const auto& neighbor : potentialNeighbors) {
                 int ni = neighbor.first;
                 int nj = neighbor.second;
@@ -207,6 +211,7 @@ void Cloth::drawCloth()
     drawSpring();
 }
 
+// I use the particlesystem approach on the lab to draw the springs //
 void Cloth::drawMass()
 {
     // transform the data of position in massInSystem to a GLfloat vector
@@ -339,6 +344,7 @@ void Cloth::requestNewState(float t, float dt)
         ngl::Vec3 positionUpdateState =  updatedState.m_position;
         ngl::Vec3 velocityUpdateState =  updatedState.m_velocity;
 
+        // update the force just to the point mass that are not fixed
         if (m1.getIsFixed() == false)
         {
             m1.setPosition(positionUpdateState);
