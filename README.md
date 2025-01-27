@@ -7,6 +7,8 @@
 ## Description
 Develop a program to simulate cloth behavior using the Mass-Spring-Damper approach. The cloth is represented as a 2D grid of point masses connected by springs and influenced by forces such as gravity. The objective is to model physical interactions between point masses to mimic fabric dynamics realistically.
 
+***Note: I wanted to implement a UI for the program, but I didn't have enough time to finish it. That's why I created a new branch called feat/ui, which contains a basic example. Some buttons and boxes are implemented.***
+
 ## Resources
 - MIT course URL: https://ocw.mit.edu/courses/6-837-computer-graphics-fall-2012/
 - Pikuma cloth simulation with Verlet integration: https://pikuma.com/blog/verlet-integration-2d-cloth-physics-simulation
