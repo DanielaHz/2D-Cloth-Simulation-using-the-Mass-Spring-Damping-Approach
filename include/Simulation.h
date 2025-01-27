@@ -18,9 +18,7 @@ class Simulation {
         void initialize();
         void render(); 
         void update(float deltaTime);
-        void start();
-        // void simulationLoop();
-        void applyLeftClick(ngl::Vec3 nglClickPosition);
+        void applyLeftClick(ngl::Vec3 nglClickPosition); // Apply a force to the the cloth when the user uses the left click
         
     private:
     Cloth m_cloth;                                          // Point mass mesh used in the simulation

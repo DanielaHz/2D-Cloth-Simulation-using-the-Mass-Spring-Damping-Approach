@@ -36,7 +36,12 @@ void NGLScene::initializeGL()
   // enable multisampling for smoother drawing
   glEnable(GL_MULTISAMPLE);
 
-  m_simulation = std::make_unique<Simulation>(15, 11, 50.0f); 
+  // Parameters to initialize the default simulation 
+  int numberMassWidth = 15;
+  int numberMassHeight = 11;
+  float spacing = 50.0f; 
+
+  m_simulation = std::make_unique<Simulation>(numberMassWidth, numberMassHeight, spacing);
   m_simulation->initialize();
 
   m_view = ngl::lookAt({620.0f, 360.0f, 1000.0f}, {620.0f, 360.0f, 0.0f}, {0, 1.0f, 0});
