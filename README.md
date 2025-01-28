@@ -20,7 +20,12 @@ Develop a program to simulate cloth behavior using the Mass-Spring-Damper approa
 Physical Based Animation
 
 ## Output
-A graphical application (OpenGL window) that visualizes the cloth simulation.
+A graphical application (OpenGL window) that visualizes a cloth simulation.
+The default simulation provided in the program is created using gravity, a damping force, and structural springs. It emulates how a cloth, with three fixed top points, behaves under gravity until it reaches an equilibrium state.
+The cloth is represented by a total of 165 point masses, connected by 304 structural springs, with an initial length of 50.
+
+## Interactivity
+Add additional force to the simulation by left-clicking on the cloth. More interactivity is expected in future versions.
 
 ## Graphics API and Framework
 - Graphics API: OpenGL
@@ -46,28 +51,57 @@ Ensure that NGL is installed on your computer. You can find the installation ins
 
 ## Installation and Build
 1. Clone the repository:
-    - git clone git@github.com:NCCA/programming-project-DanielaHz.git
+```
+git clone git@github.com:NCCA/programming-project-DanielaHz.git
+```
 2. Build the project:
-    - Windows :- mkdir build; cd build ; cmake -DCMAKE_PREFIX_PATH=~/NGL/ .. ; cmake --build . 
-    - Linux / Mac mkdir build; cd build; cmake -DCMAKE_PREFIX_PATH=~/NGL/ .. ; make
+
+- 2.1. Windows users
+```
+mkdir build 
+cd build
+cmake 
+-DCMAKE_PREFIX_PATH=~/NGL/ .. 
+cmake --build . 
+```
+- 2.2. Linux/Mac users
+```
+mkdir build
+cd build
+cmake -DCMAKE_PREFIX_PATH=~/NGL/ .. 
+make
+```
 
 ## Usage
-1. Navigate to the build directory:
-    - cd build
-2. Run the program:
-    - ./ClothSimulation
-3. Run the unit tests:
-    - ./ClothSimulationTests
+1. Navigate to the build directory
+
+- 1.1 Windows users 
+```
+cd build
+cd Debug
+```
+
+- 1.2 Linux/Mac users
+```
+cd build
+```
+2. Run the program
+```
+./ClothSimulation
+```
+3. Run the unit tests
+```
+./ClothSimulationTests
+```
 
 ## Classes
 
 - **Mass**: Represents a points mass in the cloth. 
-- **Spring**:Represents a spring connecting two particles.
-- **TimeIntegrator**:Calculate the new velocty and position integrating the final force of all point masses in the system.
+- **Spring**: Represents a spring connecting two point masses.
+- **TimeIntegrator**: Contain the RK4 explicit integrator which calculate the new velocty and position integrating the final force of all point masses in the system.
 - **Cloth**:Handles the cloth simulation, including initialization, force calculations, state updates, and draw.
 - **Simulation**:Manages the simulation logic, integrating Cloth and NGLScene.
-- **NGLScene**:Manages the OpenGL context and calls drawCloth to render the particles and springs.
-- **main**:Initializes the Qt application, sets up the OpenGL format, initializes the simulation, and runs the main loop.
+- **NGLScene**: Manages the OpenGL context and calls drawCloth to render the point masses and springs.
 
 ## UML Diagram
 
