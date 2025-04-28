@@ -1,6 +1,6 @@
 # Cloth Simulation Using Mass-Spring-Damper System 
 
-![2DCloth](images/2DCloth.jpg)
+![video](images/cloth.gif)
 
 ## Description
 Develop a program to simulate cloth behavior using the Mass-Spring-Damper approach. The cloth is represented as a 2D grid of point masses connected by springs and influenced by forces such as gravity. The objective is to model physical interactions between point masses to mimic fabric dynamics realistically.
