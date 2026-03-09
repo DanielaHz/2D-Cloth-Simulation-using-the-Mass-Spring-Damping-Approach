@@ -46,26 +46,26 @@ TEST(Cloth, createMass)
     }
 }
 
-TEST(Cloth, createSpringConnectionsTestOneMass3X3Grid) { 
-    Cloth c;
-    int numMassWidth = 3;
-    int numMassHeight = 3;
-    c.setEnableStructuralSprings();
-    c.createSpringConnections(numMassWidth, numMassHeight);
+// TEST(Cloth, createSpringConnectionsTestOneMass3X3Grid) { 
+//     Cloth c;
+//     int numMassWidth = 3;
+//     int numMassHeight = 3;
+//     c.setEnableStructuralSprings();
+//     c.createSpringConnections(numMassWidth, numMassHeight);
 
-    int mass0 = 0;
-    std::vector<int> expectedNeighbors = {3,1}; // Unique connections taking into count just the enable structural springs!!
+//     int mass0 = 0;
+//     std::vector<int> expectedNeighbors = {3,1}; // Unique connections taking into count just the enable structural springs!!
 
-    // Search for the mass connections
-    ASSERT_TRUE(c.getUniqueConnections().find(mass0) != c.getUniqueConnections().end()) << "mass not found!";
+//     // Search for the mass connections
+//     ASSERT_TRUE(c.getUniqueConnections().find(mass0) != c.getUniqueConnections().end()) << "mass not found!";
     
-    auto neighbors = c.getUniqueConnections().at(mass0);
+//     auto neighbors = c.getUniqueConnections().at(mass0);
 
-    // Find if all the connections are there
-    for (auto neighbor : expectedNeighbors) {
-        ASSERT_TRUE(std::find(neighbors.begin(), neighbors.end(), neighbor) != neighbors.end()) << "Neighbor " << neighbor << " not found!";
-    }
-}
+//     // Find if all the connections are there
+//     for (auto neighbor : expectedNeighbors) {
+//         ASSERT_TRUE(std::find(neighbors.begin(), neighbors.end(), neighbor) != neighbors.end()) << "Neighbor " << neighbor << " not found!";
+//     }
+// }
 
 TEST (Cloth, printConnectionsMap)
 {

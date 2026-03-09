@@ -5,7 +5,8 @@
 ## Description
 Develop a program to simulate cloth behavior using the Mass-Spring-Damper approach. The cloth is represented as a 2D grid of point masses connected by springs and influenced by forces such as gravity. The objective is to model physical interactions between point masses to mimic fabric dynamics realistically.
 
-***Note: I wanted to implement a UI for the program, but I didn't have enough time to finish it. That's why I created a new branch called feat/ui, which contains a basic example. Some buttons and boxes are implemented.***
+## Important Dependencies 
+Ensure that NGL is installed on your computer. You can find the installation instructions and more information here: NGL - The NCCA Graphics Library.: https://github.com/NCCA/NGL
 
 ## Resources
 - MIT course URL: https://ocw.mit.edu/courses/6-837-computer-graphics-fall-2012/
@@ -44,9 +45,6 @@ Add additional force to the simulation by left-clicking on the cloth. More inter
 - **Physics**: Forces such as gravity, spring, damping and drag. ***Note:Collision detection was not implemented in this application.***
 - **Structural Mechanics**: Modeling particle grids to simulate material properties and forces within the system.
 
-## Dependencies 
-Ensure that NGL is installed on your computer. You can find the installation instructions and more information here: NGL - The NCCA Graphics Library.: https://github.com/NCCA/NGL
-
 ## Installation and Build
 1. Clone the repository:
 ```
@@ -66,7 +64,7 @@ cmake --build .
 ```
 mkdir build
 cd build
-cmake -DCMAKE_PREFIX_PATH=~/NGL/ .. 
+cmake -DCMAKE_TOOLCHAIN_FILE=~/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_INSTALL_PREFIX:PATH=~/NGL/  ..
 make
 ```
 
