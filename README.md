@@ -3,10 +3,11 @@
 ![video](images/cloth4.gif)
 
 ## Description
-Develop a program to simulate cloth behavior using the Mass-Spring-Damper approach. The cloth is represented as a 2D grid of point masses connected by springs and influenced by forces such as gravity. The objective is to model physical interactions between point masses to mimic fabric dynamics realistically.
+In this project I develop a program to simulate cloth behavior using the Mass-Spring-Damper approach in OpenGL. The cloth is represented as a 2D grid of point masses connected by springs and influenced by forces such as gravity. The objective is to model physical interactions between point masses to mimic fabric dynamics realistically acting over gravity. 
 
 ## Important Dependencies 
-Ensure that NGL is installed on your computer. You can find the installation instructions and more information here: NGL - The NCCA Graphics Library.: https://github.com/NCCA/NGL
+-  NGL - The NCCA Graphics Library.: https://github.com/NCCA/NGL
+- vcpkg - Dependecy package manager. : https://vcpkg.io/en/
 
 ## Resources
 - MIT course URL: https://ocw.mit.edu/courses/6-837-computer-graphics-fall-2012/
